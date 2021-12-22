@@ -1,0 +1,8 @@
+# where I temporary store stuff
+/_/
+
+# where rust does its thing
+/target/
+
+# temporary files
+*~
