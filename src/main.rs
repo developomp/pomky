@@ -90,7 +90,7 @@ fn build_ui(application: &gtk::Application) {
         None => "not available",
         Some(ref value) => value.as_str(),
     };
-    label_kernel_version.set_text(format!("Kernel: {}", kernel_version).as_str());
+    label_kernel_version.set_text(kernel_version);
 
     // ==========[ Uptime ]==========
 
@@ -134,5 +134,5 @@ fn update_uptime(label: &gtk::Label, mut uptime: u64) {
     minutes = uptime / SECONDS_IN_MINUTE;
     result.push_str(format!("{} minutes", minutes).as_str());
 
-    label.set_text(format!("Uptime: {}", result).as_str());
+    label.set_text(&result);
 }

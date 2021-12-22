@@ -36,44 +36,63 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox">
+          <!-- n-columns=2 n-rows=2 -->
+          <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="margin-start">10</property>
-            <property name="margin-top">5</property>
-            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkLabel" id="label_kernel_version">
+              <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can-focus">False</property>
-                <property name="halign">start</property>
-                <property name="label" translatable="yes">kernel: X.XX.XX-archX-X</property>
+                <property name="halign">end</property>
+                <property name="label" translatable="yes">Kernel: </property>
                 <style>
                   <class name="grey"/>
                 </style>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">end</property>
+                <property name="label" translatable="yes">Uptime: </property>
+                <style>
+                  <class name="grey"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label_kernel_version">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">X.XX.XX-archX-X</property>
+              </object>
+              <packing>
+                <property name="left-attach">1</property>
+                <property name="top-attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label_uptime">
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Uptime: XX days XX hours XX minutes</property>
-                <style>
-                  <class name="grey"/>
-                </style>
+                <property name="label" translatable="yes">XX days XX hours XX minutes</property>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="left-attach">1</property>
+                <property name="top-attach">1</property>
               </packing>
             </child>
           </object>
