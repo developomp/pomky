@@ -42,7 +42,7 @@
             <property name="can-focus">False</property>
             <property name="margin-start">10</property>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="label_kernel_grey">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">end</property>
@@ -57,7 +57,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkLabel" id="label_uptime_grey">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">end</property>
@@ -109,6 +109,7 @@
             <property name="halign">start</property>
             <property name="margin-start">10</property>
             <property name="margin-top">20</property>
+            <property name="margin-bottom">20</property>
             <property name="label" translatable="yes">Storage</property>
             <style>
               <class name="h1"/>
@@ -127,6 +128,7 @@
             <property name="halign">start</property>
             <property name="margin-start">10</property>
             <property name="margin-top">20</property>
+            <property name="margin-bottom">20</property>
             <property name="label" translatable="yes">Network</property>
             <style>
               <class name="h1"/>
@@ -145,6 +147,7 @@
             <property name="halign">start</property>
             <property name="margin-start">10</property>
             <property name="margin-top">20</property>
+            <property name="margin-bottom">20</property>
             <property name="label" translatable="yes">Disk</property>
             <style>
               <class name="h1"/>
@@ -154,6 +157,107 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">20</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="label_memory">
+                <property name="name">a</property>
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">start</property>
+                <property name="margin-start">10</property>
+                <property name="margin-top">20</property>
+                <property name="margin-bottom">20</property>
+                <property name="label" translatable="yes">Memory</property>
+                <style>
+                  <class name="h1"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <!-- n-columns=2 n-rows=2 -->
+              <object class="GtkGrid">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="label_memory_usage_grey">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="margin-start">10</property>
+                    <property name="label" translatable="yes">Usage: </property>
+                    <style>
+                      <class name="grey"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_memory_free_grey">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="margin-start">10</property>
+                    <property name="label" translatable="yes">Free: </property>
+                    <style>
+                      <class name="grey"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_memory_usage">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">XX GiB / XX GiB (XX%)</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_memory_free">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">XX GiB</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>

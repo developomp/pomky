@@ -2,12 +2,17 @@ use gdk;
 use gtk::glib;
 use gtk::prelude::*;
 
-use sysinfo;
-use sysinfo::SystemExt;
+use sysinfo::{System, SystemExt};
 
 const SECONDS_IN_DAY: u64 = 86400;
 const SECONDS_IN_HOUR: u64 = 3600;
 const SECONDS_IN_MINUTE: u64 = 60;
+
+// number of kilobytes in gibibytes
+const KB_IN_GIB: f64 = 1_073_742_f64;
+
+const UPTIME_UPDATE_INTERVAL: u32 = 60;
+const MEMORY_UPDATE_INTERVAL: u32 = 1;
 
 fn main() {
     let application = gtk::Application::new(Some("com.developomp.pomky"), Default::default());
@@ -46,10 +51,7 @@ fn set_visual(window: &gtk::ApplicationWindow, _screen: Option<&gdk::Screen>) {
 }
 
 fn build_ui(application: &gtk::Application) {
-    let mut sys = sysinfo::System::new_all();
-
-    // First we update all information of our `System` struct.
-    sys.refresh_all();
+    let sys = System::new_all();
 
     // load design.ui
     let builder = gtk::Builder::from_string(include_str!("design.ui"));
@@ -79,7 +81,7 @@ fn build_ui(application: &gtk::Application) {
         );
     }
 
-    // ==========[ Kernel label ]==========
+    // ==========[ Kernel ]==========
 
     let label_kernel_version: gtk::Label = builder
         .object("label_kernel_version")
@@ -101,14 +103,63 @@ fn build_ui(application: &gtk::Application) {
     update_uptime(&label_uptime, sys.uptime());
 
     // update every minute
-    glib::timeout_add_seconds_local(60, move || {
+    glib::timeout_add_seconds_local(UPTIME_UPDATE_INTERVAL, move || {
         update_uptime(&label_uptime, sys.uptime());
+
+        return glib::Continue(true);
+    });
+
+    // ==========[ Memory ]==========
+
+    let mut sys = System::new_all();
+
+    let label_memory_usage: gtk::Label = builder
+        .object("label_memory_usage")
+        .expect("Couldn't get memory usage label");
+    let label_memory_free: gtk::Label = builder
+        .object("label_memory_free")
+        .expect("Couldn't get free memory label");
+
+    sys.refresh_memory();
+
+    update_memory_usage(&label_memory_usage, &sys);
+    update_memory_free(&label_memory_free, &sys);
+
+    glib::timeout_add_seconds_local(MEMORY_UPDATE_INTERVAL, move || {
+        sys.refresh_memory();
+
+        update_memory_usage(&label_memory_usage, &sys);
+        update_memory_free(&label_memory_free, &sys);
+
         return glib::Continue(true);
     });
 
     // ==========[ Show window ]==========
 
     window.show_all();
+}
+
+fn kb2gib(kb: u64) -> f64 {
+    return kb as f64 / KB_IN_GIB;
+}
+
+fn update_memory_usage(label: &gtk::Label, sys: &System) {
+    let mem_used = sys.used_memory();
+    let mem_total = sys.total_memory();
+
+    label.set_text(
+        format!(
+            "{:.1} GiB / {:.1} GiB ({:.1}%)",
+            kb2gib(mem_used),
+            kb2gib(mem_total),
+            100 * mem_used / mem_total
+        )
+        .as_str(),
+    );
+}
+
+fn update_memory_free(label: &gtk::Label, sys: &System) {
+    label.set_text(format!("{:.1} GiB", kb2gib(sys.free_memory())).as_str());
 }
 
 fn update_uptime(label: &gtk::Label, mut uptime: u64) {
