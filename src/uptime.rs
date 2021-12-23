@@ -7,6 +7,7 @@ use crate::{SECONDS_IN_DAY, SECONDS_IN_HOUR, SECONDS_IN_MINUTE, UPTIME_UPDATE_IN
 
 pub fn setup(builder: &Builder) {
     let sys = System::new_with_specifics(RefreshKind::new());
+
     let label_uptime: gtk::Label = builder
         .object("label_uptime")
         .expect("Couldn't get uptime label");
