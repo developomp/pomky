@@ -2,14 +2,17 @@ use gdk;
 use gtk::glib;
 use gtk::prelude::*;
 
-use sysinfo::{System, SystemExt};
+use sysinfo::{Disk, DiskExt, System, SystemExt};
 
 const SECONDS_IN_DAY: u64 = 86400;
 const SECONDS_IN_HOUR: u64 = 3600;
 const SECONDS_IN_MINUTE: u64 = 60;
 
-// number of kilobytes in gibibytes
-const KB_IN_GIB: f64 = 1_073_742_f64;
+// number of kibibytes in a gigabyte
+const KIB_IN_GB: f64 = 1024_f64 * 1000_f64;
+
+// number of bytes in a gigabyte
+const B_IN_GB: f64 = 1000_f64 * 1000_f64 * 1000_f64;
 
 const UPTIME_UPDATE_INTERVAL: u32 = 60;
 const MEMORY_UPDATE_INTERVAL: u32 = 1;
@@ -112,6 +115,7 @@ fn build_ui(application: &gtk::Application) {
     // ==========[ Memory ]==========
 
     let mut sys = System::new_all();
+    sys.refresh_memory();
 
     let label_memory_usage: gtk::Label = builder
         .object("label_memory_usage")
@@ -119,8 +123,6 @@ fn build_ui(application: &gtk::Application) {
     let label_memory_free: gtk::Label = builder
         .object("label_memory_free")
         .expect("Couldn't get free memory label");
-
-    sys.refresh_memory();
 
     update_memory_usage(&label_memory_usage, &sys);
     update_memory_free(&label_memory_free, &sys);
@@ -134,13 +136,61 @@ fn build_ui(application: &gtk::Application) {
         return glib::Continue(true);
     });
 
+    // ==========[ Disk ]==========
+
+    let mut sys = System::new_all();
+    sys.refresh_disks();
+
+    let label_disk_root: gtk::Label = builder
+        .object("label_disk_root")
+        .expect("Couldn't get root disk label");
+    let label_disk_data: gtk::Label = builder
+        .object("label_disk_data")
+        .expect("Couldn't get data disk label");
+    let label_disk_root_percent: gtk::Label = builder
+        .object("label_disk_root_percent")
+        .expect("Couldn't get root disk percent label");
+    let label_disk_data_percent: gtk::Label = builder
+        .object("label_disk_data_percent")
+        .expect("Couldn't get data disk percent label");
+
+    for disk in sys.disks() {
+        match disk.mount_point().to_str() {
+            Some("/") => {
+                update_disk(&label_disk_root, &label_disk_root_percent, disk);
+            }
+
+            Some("/media/pomp/data") => {
+                update_disk(&label_disk_data, &label_disk_data_percent, disk);
+            }
+
+            Some(&_) => {}
+
+            None => {}
+        }
+    }
+
     // ==========[ Show window ]==========
 
     window.show_all();
 }
 
-fn kb2gib(kb: u64) -> f64 {
-    return kb as f64 / KB_IN_GIB;
+/// Converts kilobytes to gigabytes
+fn kib_2_gb(kb: u64) -> f64 {
+    return kb as f64 / KIB_IN_GB;
+}
+
+/// Converts bytes to gigabytes
+fn b_2_gb(bytes: u64) -> f64 {
+    return bytes as f64 / B_IN_GB;
+}
+
+fn update_disk(label: &gtk::Label, label_percent: &gtk::Label, disk: &Disk) {
+    let available = disk.available_space();
+    let total = disk.total_space();
+
+    label.set_text(format!("{:.1}  /  {:.1}  GB", b_2_gb(available), b_2_gb(total)).as_str());
+    label_percent.set_text(format!("{:.2}%", 100_f64 * available as f64 / total as f64).as_str());
 }
 
 fn update_memory_usage(label: &gtk::Label, sys: &System) {
@@ -150,8 +200,8 @@ fn update_memory_usage(label: &gtk::Label, sys: &System) {
     label.set_text(
         format!(
             "{:.1} GiB / {:.1} GiB ({:.1}%)",
-            kb2gib(mem_used),
-            kb2gib(mem_total),
+            kib_2_gb(mem_used),
+            kib_2_gb(mem_total),
             100 * mem_used / mem_total
         )
         .as_str(),
@@ -159,7 +209,7 @@ fn update_memory_usage(label: &gtk::Label, sys: &System) {
 }
 
 fn update_memory_free(label: &gtk::Label, sys: &System) {
-    label.set_text(format!("{:.1} GiB", kb2gib(sys.free_memory())).as_str());
+    label.set_text(format!("{:.1} GiB", kib_2_gb(sys.free_memory())).as_str());
 }
 
 fn update_uptime(label: &gtk::Label, mut uptime: u64) {
