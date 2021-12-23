@@ -1,3 +1,4 @@
+mod cpu;
 mod disk;
 mod kernel;
 mod memory;
@@ -71,27 +72,11 @@ fn build_ui(application: &gtk::Application) {
         window.move_(ffi::gdk_screen_width() - window.default_width() - 10, 40);
     }
 
-    // ==========[ Kernel ]==========
-
     kernel::setup(&builder);
-
-    // ==========[ Uptime ]==========
-
     uptime::setup(&builder);
-
-    // ==========[ CPU ]==========
-
-    // ==========[ Memory ]==========
-
+    cpu::setup(&builder);
     memory::setup(&builder);
-
-    // ==========[ Network ]==========
-
-    // ==========[ Disk ]==========
-
     disk::setup(&builder);
-
-    // ==========[ Show window ]==========
 
     window.show_all();
 }
