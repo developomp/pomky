@@ -2,7 +2,11 @@ use gdk;
 use gtk::glib;
 use gtk::prelude::*;
 
-use sysinfo::{Disk, DiskExt, System, SystemExt};
+use sysinfo::{Disk, DiskExt, RefreshKind, System, SystemExt};
+
+const UPTIME_UPDATE_INTERVAL: u32 = 60;
+const MEMORY_UPDATE_INTERVAL: u32 = 1;
+const DISK_UPDATE_INTERVAL: u32 = 5;
 
 const SECONDS_IN_DAY: u64 = 86400;
 const SECONDS_IN_HOUR: u64 = 3600;
@@ -13,9 +17,6 @@ const KIB_IN_GB: f64 = 1024_f64 * 1000_f64;
 
 // number of bytes in a gigabyte
 const B_IN_GB: f64 = 1000_f64 * 1000_f64 * 1000_f64;
-
-const UPTIME_UPDATE_INTERVAL: u32 = 60;
-const MEMORY_UPDATE_INTERVAL: u32 = 1;
 
 fn main() {
     let application = gtk::Application::new(Some("com.developomp.pomky"), Default::default());
@@ -54,8 +55,6 @@ fn set_visual(window: &gtk::ApplicationWindow, _screen: Option<&gdk::Screen>) {
 }
 
 fn build_ui(application: &gtk::Application) {
-    let sys = System::new_all();
-
     // load design.ui
     let builder = gtk::Builder::from_string(include_str!("design.ui"));
 
@@ -86,6 +85,8 @@ fn build_ui(application: &gtk::Application) {
 
     // ==========[ Kernel ]==========
 
+    let sys = System::new_with_specifics(RefreshKind::new());
+
     let label_kernel_version: gtk::Label = builder
         .object("label_kernel_version")
         .expect("Couldn't get Kernel version label");
@@ -112,9 +113,11 @@ fn build_ui(application: &gtk::Application) {
         return glib::Continue(true);
     });
 
+    // ==========[ CPU ]==========
+
     // ==========[ Memory ]==========
 
-    let mut sys = System::new_all();
+    let mut sys = System::new_with_specifics(RefreshKind::new().with_memory());
     sys.refresh_memory();
 
     let label_memory_usage: gtk::Label = builder
@@ -136,10 +139,9 @@ fn build_ui(application: &gtk::Application) {
         return glib::Continue(true);
     });
 
-    // ==========[ Disk ]==========
+    // ==========[ Network ]==========
 
-    let mut sys = System::new_all();
-    sys.refresh_disks();
+    // ==========[ Disk ]==========
 
     let label_disk_root: gtk::Label = builder
         .object("label_disk_root")
@@ -154,6 +156,53 @@ fn build_ui(application: &gtk::Application) {
         .object("label_disk_data_percent")
         .expect("Couldn't get data disk percent label");
 
+    let mut sys = System::new_with_specifics(RefreshKind::new().with_disks().with_disks_list());
+    sys.refresh_disks();
+    update_disks(
+        &sys,
+        &label_disk_root,
+        &label_disk_data,
+        &label_disk_root_percent,
+        &label_disk_data_percent,
+    );
+
+    let mut sys = System::new_with_specifics(RefreshKind::new().with_disks().with_disks_list());
+
+    glib::timeout_add_seconds_local(DISK_UPDATE_INTERVAL, move || {
+        sys.refresh_disks();
+        update_disks(
+            &sys,
+            &label_disk_root,
+            &label_disk_data,
+            &label_disk_root_percent,
+            &label_disk_data_percent,
+        );
+
+        return glib::Continue(true);
+    });
+
+    // ==========[ Show window ]==========
+
+    window.show_all();
+}
+
+/// Converts kilobytes to gigabytes
+fn kib_2_gb(kb: u64) -> f64 {
+    return kb as f64 / KIB_IN_GB;
+}
+
+/// Converts bytes to gigabytes
+fn b_2_gb(bytes: u64) -> f64 {
+    return bytes as f64 / B_IN_GB;
+}
+
+fn update_disks(
+    sys: &System,
+    label_disk_root: &gtk::Label,
+    label_disk_data: &gtk::Label,
+    label_disk_root_percent: &gtk::Label,
+    label_disk_data_percent: &gtk::Label,
+) {
     for disk in sys.disks() {
         match disk.mount_point().to_str() {
             Some("/") => {
@@ -169,20 +218,6 @@ fn build_ui(application: &gtk::Application) {
             None => {}
         }
     }
-
-    // ==========[ Show window ]==========
-
-    window.show_all();
-}
-
-/// Converts kilobytes to gigabytes
-fn kib_2_gb(kb: u64) -> f64 {
-    return kb as f64 / KIB_IN_GB;
-}
-
-/// Converts bytes to gigabytes
-fn b_2_gb(bytes: u64) -> f64 {
-    return bytes as f64 / B_IN_GB;
 }
 
 fn update_disk(label: &gtk::Label, label_percent: &gtk::Label, disk: &Disk) {
