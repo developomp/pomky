@@ -186,11 +186,11 @@ fn b_2_gb(bytes: u64) -> f64 {
 }
 
 fn update_disk(label: &gtk::Label, label_percent: &gtk::Label, disk: &Disk) {
-    let available = disk.available_space();
     let total = disk.total_space();
+    let used = total - disk.available_space();
 
-    label.set_text(format!("{:.1}  /  {:.1}  GB", b_2_gb(available), b_2_gb(total)).as_str());
-    label_percent.set_text(format!("{:.2}%", 100_f64 * available as f64 / total as f64).as_str());
+    label.set_text(format!("{:.1}  /  {:.1}  GB", b_2_gb(used), b_2_gb(total)).as_str());
+    label_percent.set_text(format!("{:.1}%", 100_f64 * used as f64 / total as f64).as_str());
 }
 
 fn update_memory_usage(label: &gtk::Label, sys: &System) {
