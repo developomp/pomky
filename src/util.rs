@@ -13,3 +13,10 @@ pub fn kib_2_gb(kb: u64) -> f64 {
 pub fn b_2_gb(bytes: u64) -> f64 {
     return bytes as f64 / B_IN_GB;
 }
+
+#[macro_export]
+macro_rules! could_not_get {
+    ($name:expr) => {
+        format!("Couldn't get {}", $name).as_str()
+    };
+}

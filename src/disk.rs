@@ -1,25 +1,24 @@
 use gdk::glib;
-use gtk::{
-    prelude::{BuilderExtManual, LabelExt},
-    Builder,
-};
+use gtk::prelude::{BuilderExtManual, LabelExt};
+use gtk::Builder;
 use sysinfo::{Disk, DiskExt, RefreshKind, System, SystemExt};
 
-use crate::{util::b_2_gb, DISK_UPDATE_INTERVAL};
+use crate::util::b_2_gb;
+use crate::{could_not_get, DISK_UPDATE_INTERVAL};
 
 pub fn setup(builder: &Builder) {
     let label_disk_root: gtk::Label = builder
         .object("label_disk_root")
-        .expect("Couldn't get root disk label");
+        .expect(could_not_get!("label_disk_root"));
     let label_disk_data: gtk::Label = builder
         .object("label_disk_data")
-        .expect("Couldn't get data disk label");
+        .expect(could_not_get!("label_disk_data"));
     let label_disk_root_percent: gtk::Label = builder
         .object("label_disk_root_percent")
-        .expect("Couldn't get root disk percent label");
+        .expect(could_not_get!("label_disk_root_percent"));
     let label_disk_data_percent: gtk::Label = builder
         .object("label_disk_data_percent")
-        .expect("Couldn't get data disk percent label");
+        .expect(could_not_get!("label_disk_data_percent"));
 
     let mut sys = System::new_with_specifics(RefreshKind::new().with_disks().with_disks_list());
     sys.refresh_disks();

@@ -5,8 +5,8 @@ use gtk::{
 };
 use sysinfo::{RefreshKind, System, SystemExt};
 
-use crate::util::kib_2_gb;
 use crate::MEMORY_UPDATE_INTERVAL;
+use crate::{could_not_get, util::kib_2_gb};
 
 pub fn setup(builder: &Builder) {
     let mut sys = System::new_with_specifics(RefreshKind::new().with_memory());
@@ -14,10 +14,10 @@ pub fn setup(builder: &Builder) {
 
     let label_memory_usage: gtk::Label = builder
         .object("label_memory_usage")
-        .expect("Couldn't get memory usage label");
+        .expect(could_not_get!("label_memory_usage"));
     let label_memory_free: gtk::Label = builder
         .object("label_memory_free")
-        .expect("Couldn't get free memory label");
+        .expect(could_not_get!("label_memory_free"));
 
     update_memory_usage(&label_memory_usage, &sys);
     update_memory_free(&label_memory_free, &sys);

@@ -54,7 +54,7 @@ fn build_ui(application: &gtk::Application) {
 
     let window: gtk::ApplicationWindow = builder
         .object("window_main")
-        .expect("Couldn't get window_main");
+        .expect(could_not_get!("window_main"));
     window.set_application(Some(application));
 
     window.connect_screen_changed(set_visual);
