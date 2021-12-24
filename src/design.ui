@@ -7,7 +7,7 @@
     <property name="app-paintable">True</property>
     <property name="can-focus">False</property>
     <property name="resizable">False</property>
-    <property name="default-width">400</property>
+    <property name="default-width">420</property>
     <property name="default-height">1030</property>
     <property name="type-hint">desktop</property>
     <property name="focus-on-map">False</property>
@@ -18,12 +18,15 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
         <property name="orientation">vertical</property>
         <property name="baseline-position">top</property>
         <child>
           <object class="GtkLabel" id="label_pomp_logo">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="margin-top">20</property>
             <property name="margin-bottom">20</property>
             <property name="label" translatable="yes">{P}</property>
             <style>
@@ -41,7 +44,6 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-start">10</property>
             <child>
               <object class="GtkLabel" id="label_kernel_grey">
                 <property name="visible">True</property>
@@ -113,7 +115,6 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-start">10</property>
                 <property name="margin-top">20</property>
                 <property name="margin-bottom">20</property>
                 <property name="label" translatable="yes">CPU</property>
@@ -139,6 +140,9 @@
                 <property name="position">1</property>
               </packing>
             </child>
+            <child>
+              <placeholder/>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -157,7 +161,6 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-start">10</property>
                 <property name="margin-top">20</property>
                 <property name="margin-bottom">20</property>
                 <property name="label" translatable="yes">RAM</property>
@@ -176,7 +179,6 @@
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-start">10</property>
                 <child>
                   <object class="GtkLabel" id="label_memory_usage_grey">
                     <property name="visible">True</property>
@@ -255,7 +257,6 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-start">10</property>
                 <property name="margin-top">20</property>
                 <property name="margin-bottom">20</property>
                 <property name="label" translatable="yes">Network</property>
@@ -292,7 +293,6 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-start">10</property>
                 <property name="margin-top">20</property>
                 <property name="margin-bottom">20</property>
                 <property name="label" translatable="yes">Disk</property>
@@ -307,18 +307,17 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=5 -->
+              <!-- n-columns=3 n-rows=4 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-start">10</property>
                 <child>
                   <object class="GtkLabel" id="label_disk_root">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">end</property>
-                    <property name="margin-start">50</property>
-                    <property name="margin-end">50</property>
+                    <property name="margin-start">70</property>
+                    <property name="margin-end">70</property>
                     <property name="label" translatable="yes">XX.X / XX.X GB</property>
                   </object>
                   <packing>
@@ -331,7 +330,6 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">end</property>
-                    <property name="margin-end">10</property>
                     <property name="label" translatable="yes">/</property>
                     <style>
                       <class name="grey"/>
@@ -347,7 +345,6 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">end</property>
-                    <property name="margin-end">10</property>
                     <property name="label" translatable="yes">/media/pomp/data</property>
                     <style>
                       <class name="grey"/>
@@ -363,8 +360,8 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="halign">end</property>
-                    <property name="margin-start">50</property>
-                    <property name="margin-end">50</property>
+                    <property name="margin-start">70</property>
+                    <property name="margin-end">70</property>
                     <property name="label" translatable="yes">XX.X / XX.X GB</property>
                   </object>
                   <packing>
@@ -397,31 +394,34 @@
                   </packing>
                 </child>
                 <child>
-                  <placeholder/>
+                  <object class="GtkBox" id="disk_root_bar_container">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
+                    <property name="width">3</property>
+                  </packing>
                 </child>
                 <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
-                </child>
-                <child>
-                  <placeholder/>
+                  <object class="GtkBox" id="disk_data_bar_container">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">2</property>
+                    <property name="width">3</property>
+                  </packing>
                 </child>
               </object>
               <packing>
