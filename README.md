@@ -10,6 +10,7 @@ Designed using [glade](https://wiki.gnome.org/Apps/Glade).
 ## Requirements
 
 - [cargo](https://doc.rust-lang.org/stable/cargo)
+- Noto Sans font
 
 ## Commands
 
