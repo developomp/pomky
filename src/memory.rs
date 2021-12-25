@@ -67,5 +67,5 @@ fn update(
     label_memory_free.set_text(format!("{:.1} GB", kib_2_gb(sys.free_memory())).as_str());
     label_memory_percent.set_text(format!("{:.1}%", 100.0 * ratio).as_str());
 
-    draw_bar(&memory_usage_bar, 400, 6, ratio);
+    draw_bar(&memory_usage_bar, 500, 6, ratio);
 }

@@ -8,6 +8,7 @@ pub fn draw_bar(drawing_area: &gtk::DrawingArea, width: i32, height: i32, value:
 
     drawing_area.set_size_request(width, height);
 
+    // todo: value not changing inside closure
     drawing_area.connect_draw(move |_, cr| {
         cr.set_source_rgb(1.0, 1.0, 1.0);
         cr.set_line_width(2.0);

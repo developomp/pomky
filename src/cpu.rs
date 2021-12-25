@@ -1,20 +1,59 @@
-use gtk::prelude::{BuilderExtManual, LabelExt};
-use gtk::{Builder, Label};
-use sysinfo::{RefreshKind, System, SystemExt};
+use gdk::glib;
+use gtk::prelude::LabelExt;
+use sysinfo::{ProcessorExt, RefreshKind, System, SystemExt};
 
-use crate::could_not_get;
+use crate::{bar::draw_bar, util::get_widget};
 
-pub fn setup(builder: &Builder) {
-    let sys = System::new_with_specifics(RefreshKind::new());
+const CPU_UPDATE_INTERVAL: u32 = 1;
 
-    let label_physical_core_count: Label = builder
-        .object("label_physical_core_count")
-        .expect(could_not_get!("label_physical_core_count"));
+pub fn setup(builder: &gtk::Builder) {
+    // todo: there's probably a better way of doing this...
+    let cpu_percent_labels: [gtk::Label; 8] = [
+        get_widget("label_cpu0_percent", &builder),
+        get_widget("label_cpu1_percent", &builder),
+        get_widget("label_cpu2_percent", &builder),
+        get_widget("label_cpu3_percent", &builder),
+        get_widget("label_cpu4_percent", &builder),
+        get_widget("label_cpu5_percent", &builder),
+        get_widget("label_cpu6_percent", &builder),
+        get_widget("label_cpu7_percent", &builder),
+    ];
 
-    let core_count = match sys.physical_core_count() {
-        Some(count) => count,
-        None => 0,
-    };
+    let cpu_percent_bars: [gtk::DrawingArea; 8] = [
+        get_widget("drawing_area_cpu0_percent", &builder),
+        get_widget("drawing_area_cpu1_percent", &builder),
+        get_widget("drawing_area_cpu2_percent", &builder),
+        get_widget("drawing_area_cpu3_percent", &builder),
+        get_widget("drawing_area_cpu4_percent", &builder),
+        get_widget("drawing_area_cpu5_percent", &builder),
+        get_widget("drawing_area_cpu6_percent", &builder),
+        get_widget("drawing_area_cpu7_percent", &builder),
+    ];
 
-    label_physical_core_count.set_text(format!("physical cores: {}", core_count).as_str());
+    let mut sys = System::new_with_specifics(RefreshKind::new());
+    update(&mut sys, &cpu_percent_labels, &cpu_percent_bars);
+
+    glib::timeout_add_seconds_local(CPU_UPDATE_INTERVAL, move || {
+        update(&mut sys, &cpu_percent_labels, &cpu_percent_bars);
+
+        return glib::Continue(true);
+    });
+}
+
+fn update(
+    sys: &mut System,
+    cpu_percent_labels: &[gtk::Label; 8],
+    cpu_percent_bars: &[gtk::DrawingArea; 8],
+) {
+    sys.refresh_cpu();
+
+    let processors = sys.processors();
+
+    for (i, processor) in processors.into_iter().enumerate() {
+        let percent = processor.cpu_usage() as f64;
+
+        cpu_percent_labels[i].set_text(format!("{:.1}%", percent).as_str());
+
+        // draw_bar(&cpu_percent_bars[i], 120, 6, percent / 100.0);
+    }
 }

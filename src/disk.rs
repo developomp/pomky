@@ -100,8 +100,8 @@ fn update_disk(
     let used = total - disk.available_space();
     let ratio = used as f64 / total as f64;
 
-    label.set_text(format!("{:.1}  /  {:.1}  GB", b_2_gb(used), b_2_gb(total)).as_str());
-    label_percent.set_text(format!("{:.1}%", 100_f64 * ratio).as_str());
+    label.set_text(format!("{:.1}  /  {:.1} GB", b_2_gb(used), b_2_gb(total)).as_str());
+    label_percent.set_text(format!("{:.1}%", 100.0 * ratio).as_str());
 
-    draw_bar(&drawing_area, 400, 6, ratio);
+    draw_bar(&drawing_area, 500, 6, ratio);
 }
