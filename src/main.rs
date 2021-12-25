@@ -1,3 +1,4 @@
+mod bar;
 mod cpu;
 mod disk;
 mod kernel;
