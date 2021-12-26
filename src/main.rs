@@ -1,7 +1,6 @@
 mod bar;
 mod cpu;
 mod disk;
-mod drawing;
 pub mod image;
 mod kernel;
 mod memory;

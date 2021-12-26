@@ -10,7 +10,6 @@ use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
 
-use crate::drawing::draw_image_if_dirty;
 use crate::image::Image;
 use crate::util::get_widget;
 
@@ -28,87 +27,78 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
 {
     let width_f64 = width as f64;
     let height_f64 = height as f64;
-
-    let drawing_area = get_widget::<gtk::DrawingArea>(widget_name, &builder);
-
-    drawing_area.set_size_request(width, height);
-
-    // This is the channel for sending results from the worker thread to the main thread
-    // For every received image, queue the corresponding part of the DrawingArea for redrawing
-    let (ready_tx, ready_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
-
-    // This is the channel for sending image from the GUI thread to the workers so that the
-    // worker can draw the new content into them
-    let (tx, rx) = mpsc::channel();
-
+    let delay = Duration::from_secs(update_interval);
     let initial_image = Image::new(width, height);
 
-    // Send a image to the worker thread for drawing the new content
-    tx.send(initial_image.clone()).unwrap();
+    let drawing_area = get_widget::<gtk::DrawingArea>(widget_name, &builder);
+    drawing_area.set_size_request(width, height);
 
-    let delay = Duration::from_secs(update_interval);
+    let (to_main_tx, to_main_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (to_worker_tx, to_worker_rx) = mpsc::channel();
 
-    // Spawn the worker thread
-    thread::spawn(glib::clone!(@strong ready_tx => move || {
+    to_worker_tx.send(initial_image.clone()).unwrap();
+
+    let workspace = Rc::new((RefCell::new(initial_image.clone()), to_worker_tx));
+
+    // worker thread
+    thread::spawn(glib::clone!(@strong to_main_tx => move || {
         let mut data = f1();
 
-        for mut image in rx.iter() {
-            image.with_surface(|surface| {
+        for mut received_image in to_worker_rx.iter() {
+            // draw the bar
+            received_image.with_surface(|surface| {
                 let cr = Context::new(surface).expect("Can't create a Cairo context");
 
                 cr.set_source_rgb(1.0, 1.0, 1.0);
                 cr.set_line_width(2.0);
+
+                // =====[ border ]=====
+
+                cr.rectangle(0.0, 0.0, width_f64, height_f64);
+                cr.stroke().expect("Failed to draw bar outline");
 
                 // =====[ bar ]=====
 
                 cr.rectangle(0.0, 0.0, width_f64 * f2(&mut data), height_f64);
                 cr.fill().expect("Failed to fill bar");
 
-                // =====[ border ]=====
-
-                cr.rectangle(0.0, 0.0, width_f64, height_f64);
-                cr.stroke().expect("Failed to draw border");
-
                 surface.flush();
             });
 
-            // Send the finished image back to the GUI thread
-            ready_tx.send(image).unwrap();
+            to_main_tx.send(received_image).unwrap();
 
             thread::sleep(delay);
         }
     }));
 
-    // The connect-draw signal and the timeout handler closures have to be 'static, and both need
-    // to have access to our images and related state.
-    let workspace = Rc::new((RefCell::new(initial_image.clone()), tx));
-
-    // Whenever the drawing area has to be redrawn, render the latest images in the correct
-    // locations
+    // GUI thread
     drawing_area.connect_draw(
         glib::clone!(@weak workspace => @default-return gtk::Inhibit(false), move |_, cr| {
-            let (ref image, _) = *workspace;
+            let (ref current_image, _) = *workspace;
 
-                image.borrow_mut().with_surface(|surface| {
-                    draw_image_if_dirty(cr, surface, (width, height));
-                });
+            current_image.borrow_mut().with_surface(|surface| {
+                cr.set_source_surface(surface, 0.0, 0.0).expect("The surface has an invalid state");
+                cr.paint().expect("Invalid cairo surface state");
 
+                // Release the reference to the surface again
+                cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
+            });
 
-            gtk::Inhibit(false)
+            return gtk::Inhibit(false);
         }),
     );
 
-    ready_rx.attach(None, move |new_image| {
-        let (ref image, ref tx) = *workspace;
+    // main thread
+    to_main_rx.attach(None, move |received_image| {
+        let (ref old_image, ref to_worker_tx) = *workspace;
 
-        // Swap the newly received image with the old stored one and send the old one back to
-        // the worker thread
-        let tx = &tx;
-        let image = image.replace(new_image);
-        tx.send(image).unwrap();
+        // Swap the newly received image with the old stored one
+        let current_image = old_image.replace(received_image);
+        // and send the old one back to the worker thread
+        to_worker_tx.send(current_image).unwrap();
 
         drawing_area.queue_draw();
 
-        Continue(true)
+        return Continue(true);
     });
 }
