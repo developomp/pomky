@@ -2,7 +2,7 @@ use gdk::glib;
 use gtk::prelude::LabelExt;
 use sysinfo::{ProcessorExt, RefreshKind, System, SystemExt};
 
-use crate::{bar::draw_bar, util::get_widget};
+use crate::{bar::build_bar, util::get_widget};
 
 const CPU_UPDATE_INTERVAL: u32 = 1;
 
@@ -19,41 +19,38 @@ pub fn setup(builder: &gtk::Builder) {
         get_widget("label_cpu7_percent", &builder),
     ];
 
-    let cpu_percent_bars: [gtk::DrawingArea; 8] = [
-        get_widget("drawing_area_cpu0_percent", &builder),
-        get_widget("drawing_area_cpu1_percent", &builder),
-        get_widget("drawing_area_cpu2_percent", &builder),
-        get_widget("drawing_area_cpu3_percent", &builder),
-        get_widget("drawing_area_cpu4_percent", &builder),
-        get_widget("drawing_area_cpu5_percent", &builder),
-        get_widget("drawing_area_cpu6_percent", &builder),
-        get_widget("drawing_area_cpu7_percent", &builder),
-    ];
-
     let mut sys = System::new_with_specifics(RefreshKind::new());
-    update(&mut sys, &cpu_percent_labels, &cpu_percent_bars);
+    update(&mut sys, &cpu_percent_labels);
+
+    for i in 0..8 {
+        build_bar(
+            builder,
+            format!("drawing_area_cpu{}_percent", i).as_str(),
+            120,
+            6,
+            CPU_UPDATE_INTERVAL as u64,
+            || {
+                return System::new_with_specifics(RefreshKind::new());
+            },
+            move |sys| {
+                sys.refresh_cpu();
+
+                return sys.processors()[i].cpu_usage() as f64 / 100.0;
+            },
+        );
+    }
 
     glib::timeout_add_seconds_local(CPU_UPDATE_INTERVAL, move || {
-        update(&mut sys, &cpu_percent_labels, &cpu_percent_bars);
+        update(&mut sys, &cpu_percent_labels);
 
         return glib::Continue(true);
     });
 }
 
-fn update(
-    sys: &mut System,
-    cpu_percent_labels: &[gtk::Label; 8],
-    cpu_percent_bars: &[gtk::DrawingArea; 8],
-) {
+fn update(sys: &mut System, cpu_percent_labels: &[gtk::Label; 8]) {
     sys.refresh_cpu();
 
-    let processors = sys.processors();
-
-    for (i, processor) in processors.into_iter().enumerate() {
-        let percent = processor.cpu_usage() as f64;
-
-        cpu_percent_labels[i].set_text(format!("{:.1}%", percent).as_str());
-
-        // draw_bar(&cpu_percent_bars[i], 120, 6, percent / 100.0);
+    for (i, processor) in sys.processors().into_iter().enumerate() {
+        cpu_percent_labels[i].set_text(format!("{:.1}%", processor.cpu_usage()).as_str());
     }
 }
