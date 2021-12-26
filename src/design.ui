@@ -183,6 +183,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">1</property>
+                        <style>
+                          <class name="grey"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -229,6 +232,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">2</property>
+                        <style>
+                          <class name="grey"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -275,6 +281,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">3</property>
+                        <style>
+                          <class name="grey"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -321,6 +330,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">4</property>
+                        <style>
+                          <class name="grey"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -367,6 +379,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">5</property>
+                        <style>
+                          <class name="grey"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -413,6 +428,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">6</property>
+                        <style>
+                          <class name="grey"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -459,6 +477,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">7</property>
+                        <style>
+                          <class name="grey"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -505,6 +526,9 @@
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">8</property>
+                        <style>
+                          <class name="grey"/>
+                        </style>
                       </object>
                       <packing>
                         <property name="expand">False</property>
