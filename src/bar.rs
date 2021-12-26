@@ -1,4 +1,5 @@
 /// Bar graph
+/// taken from [gtk3-rs cairo thread example](https://github.com/gtk-rs/gtk3-rs/tree/67f3a1833d303ef292def8d341880f4a92445a5c/examples/cairo_threads)
 use gtk;
 use gtk::cairo::Context;
 use gtk::glib;
@@ -28,24 +29,42 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
     let width_f64 = width as f64;
     let height_f64 = height as f64;
     let delay = Duration::from_secs(update_interval);
-    let initial_image = Image::new(width, height);
 
     let drawing_area = get_widget::<gtk::DrawingArea>(widget_name, &builder);
     drawing_area.set_size_request(width, height);
 
-    let (to_main_tx, to_main_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
-    let (to_worker_tx, to_worker_rx) = mpsc::channel();
+    let (main_thread_tx, main_thread_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (worker_thread_tx, worker_thread_rx) = mpsc::channel();
 
-    to_worker_tx.send(initial_image.clone()).unwrap();
+    // initialize images to be worked by the threads
+    worker_thread_tx.send(Image::new(width, height)).unwrap();
+    let workspace = Rc::new((RefCell::new(Image::new(width, height)), worker_thread_tx));
 
-    let workspace = Rc::new((RefCell::new(initial_image.clone()), to_worker_tx));
+    // apply changes to the image
+    drawing_area.connect_draw(
+        glib::clone!(@weak workspace => @default-return gtk::Inhibit(false), move |_, cr| {
+            let (ref current_image, _) = *workspace;
+
+            current_image.borrow_mut().with_surface(|surface| {
+                // Capture reference to the surface
+                cr.set_source_surface(surface, 0.0, 0.0).expect("The surface has an invalid state");
+
+                cr.paint().expect("Invalid cairo surface state");
+
+                // Release reference to the surface again (removing this line causes an error)
+                cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
+            });
+
+            return gtk::Inhibit(false);
+        }),
+    );
 
     // worker thread
-    thread::spawn(glib::clone!(@strong to_main_tx => move || {
+    // does the actual drawing
+    thread::spawn(glib::clone!(@strong main_thread_tx => move || {
         let mut data = f1();
 
-        for mut received_image in to_worker_rx.iter() {
-            // draw the bar
+        for mut received_image in worker_thread_rx.iter() {
             received_image.with_surface(|surface| {
                 let cr = Context::new(surface).expect("Can't create a Cairo context");
 
@@ -65,37 +84,21 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
                 surface.flush();
             });
 
-            to_main_tx.send(received_image).unwrap();
+            main_thread_tx.send(received_image).unwrap();
 
             thread::sleep(delay);
         }
     }));
 
-    // GUI thread
-    drawing_area.connect_draw(
-        glib::clone!(@weak workspace => @default-return gtk::Inhibit(false), move |_, cr| {
-            let (ref current_image, _) = *workspace;
-
-            current_image.borrow_mut().with_surface(|surface| {
-                cr.set_source_surface(surface, 0.0, 0.0).expect("The surface has an invalid state");
-                cr.paint().expect("Invalid cairo surface state");
-
-                // Release the reference to the surface again
-                cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
-            });
-
-            return gtk::Inhibit(false);
-        }),
-    );
-
     // main thread
-    to_main_rx.attach(None, move |received_image| {
-        let (ref old_image, ref to_worker_tx) = *workspace;
+    // swap images from a double-buffer-like memory
+    main_thread_rx.attach(None, move |received_image| {
+        let (ref old_image, ref worker_thread_tx) = *workspace;
 
-        // Swap the newly received image with the old stored one
-        let current_image = old_image.replace(received_image);
+        // replace stored image with a new one
+        let old_image = old_image.replace(received_image);
         // and send the old one back to the worker thread
-        to_worker_tx.send(current_image).unwrap();
+        worker_thread_tx.send(old_image).unwrap();
 
         drawing_area.queue_draw();
 
