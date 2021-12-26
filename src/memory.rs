@@ -1,24 +1,19 @@
 use gdk::glib;
-use gtk::prelude::{BuilderExtManual, LabelExt};
+use gtk::prelude::LabelExt;
 use gtk::Builder;
 
 use sysinfo::{RefreshKind, System, SystemExt};
 
-use crate::{bar::build_bar, could_not_get, util::kib_2_gb, MEMORY_UPDATE_INTERVAL};
+use crate::bar::build_bar;
+use crate::util::{get_widget, kib_2_gb};
+
+const MEMORY_UPDATE_INTERVAL: u32 = 1;
 
 pub fn setup(builder: &Builder) {
-    let label_memory_used: gtk::Label = builder
-        .object("label_memory_used")
-        .expect(could_not_get!("label_memory_used"));
-    let label_memory_total: gtk::Label = builder
-        .object("label_memory_total")
-        .expect(could_not_get!("label_memory_total"));
-    let label_memory_free: gtk::Label = builder
-        .object("label_memory_free")
-        .expect(could_not_get!("label_memory_free"));
-    let label_memory_percent: gtk::Label = builder
-        .object("label_memory_percent")
-        .expect(could_not_get!("label_memory_percent"));
+    let label_memory_used = get_widget("label_memory_used", &builder);
+    let label_memory_total = get_widget("label_memory_total", &builder);
+    let label_memory_free = get_widget("label_memory_free", &builder);
+    let label_memory_percent = get_widget("label_memory_percent", &builder);
 
     let mut sys = System::new_with_specifics(RefreshKind::new().with_memory());
     sys.refresh_memory();

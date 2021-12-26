@@ -1,26 +1,19 @@
 use gdk::glib;
-use gtk::prelude::{BuilderExtManual, LabelExt};
+use gtk::prelude::LabelExt;
 
 use sysinfo::{Disk, DiskExt, RefreshKind, System, SystemExt};
 
 use crate::bar::build_bar;
-use crate::util::b_2_gb;
-use crate::{could_not_get, DISK_UPDATE_INTERVAL};
+use crate::util::{b_2_gb, get_widget};
+
+const DISK_UPDATE_INTERVAL: u32 = 5;
 
 pub fn setup(builder: &gtk::Builder) {
-    let label_disk_root: gtk::Label = builder
-        .object("label_disk_root")
-        .expect(could_not_get!("label_disk_root"));
-    let label_disk_root_percent: gtk::Label = builder
-        .object("label_disk_root_percent")
-        .expect(could_not_get!("label_disk_root_percent"));
+    let label_disk_root = get_widget("label_disk_root", &builder);
+    let label_disk_root_percent = get_widget("label_disk_root_percent", &builder);
 
-    let label_disk_data: gtk::Label = builder
-        .object("label_disk_data")
-        .expect(could_not_get!("label_disk_data"));
-    let label_disk_data_percent: gtk::Label = builder
-        .object("label_disk_data_percent")
-        .expect(could_not_get!("label_disk_data_percent"));
+    let label_disk_data = get_widget("label_disk_data", &builder);
+    let label_disk_data_percent = get_widget("label_disk_data_percent", &builder);
 
     update(
         &label_disk_root,

@@ -2,7 +2,7 @@
 use gtk;
 use gtk::cairo::Context;
 use gtk::glib;
-use gtk::prelude::{BuilderExtManual, Continue, WidgetExt};
+use gtk::prelude::{Continue, WidgetExt};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -10,9 +10,9 @@ use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
 
-use crate::could_not_get;
 use crate::drawing::draw_image_if_dirty;
 use crate::image::Image;
+use crate::util::get_widget;
 
 pub fn build_bar<F1: 'static, F2: 'static>(
     builder: &gtk::Builder,
@@ -29,9 +29,7 @@ pub fn build_bar<F1: 'static, F2: 'static>(
     let width_f64 = width as f64;
     let height_f64 = height as f64;
 
-    let drawing_area: gtk::DrawingArea = builder
-        .object(widget_name)
-        .expect(could_not_get!(widget_name));
+    let drawing_area: gtk::DrawingArea = get_widget(widget_name, &builder);
 
     drawing_area.set_size_request(width, height);
 

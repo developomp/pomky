@@ -9,13 +9,9 @@ mod uptime;
 mod util;
 
 use gdk::{ffi, Screen};
-use gtk::prelude::{
-    ApplicationExt, ApplicationExtManual, BuilderExtManual, CssProviderExt, GtkWindowExt, WidgetExt,
-};
+use gtk::prelude::{ApplicationExt, ApplicationExtManual, CssProviderExt, GtkWindowExt, WidgetExt};
 
-const UPTIME_UPDATE_INTERVAL: u32 = 60;
-const MEMORY_UPDATE_INTERVAL: u32 = 1;
-const DISK_UPDATE_INTERVAL: u32 = 5;
+use util::get_widget;
 
 const SECONDS_IN_DAY: u64 = 86400;
 const SECONDS_IN_HOUR: u64 = 3600;
@@ -55,9 +51,7 @@ fn build_ui(application: &gtk::Application) {
 
     // ==========[ Window ]==========
 
-    let window: gtk::ApplicationWindow = builder
-        .object("window_main")
-        .expect(could_not_get!("window_main"));
+    let window: gtk::ApplicationWindow = get_widget("window_main", &builder);
     window.set_application(Some(application));
 
     window.connect_screen_changed(set_visual);

@@ -1,18 +1,17 @@
 use gdk::glib;
-use gtk::prelude::{BuilderExtManual, LabelExt};
+use gtk::prelude::LabelExt;
 use gtk::Builder;
 use sysinfo::{RefreshKind, System, SystemExt};
 
-use crate::{
-    could_not_get, SECONDS_IN_DAY, SECONDS_IN_HOUR, SECONDS_IN_MINUTE, UPTIME_UPDATE_INTERVAL,
-};
+use crate::util::get_widget;
+use crate::{SECONDS_IN_DAY, SECONDS_IN_HOUR, SECONDS_IN_MINUTE};
+
+const UPTIME_UPDATE_INTERVAL: u32 = 60;
 
 pub fn setup(builder: &Builder) {
-    let sys = System::new_with_specifics(RefreshKind::new());
+    let label_uptime = get_widget("label_uptime", &builder);
 
-    let label_uptime: gtk::Label = builder
-        .object("label_uptime")
-        .expect(could_not_get!("label_uptime"));
+    let sys = System::new_with_specifics(RefreshKind::new());
 
     update_uptime(&label_uptime, sys.uptime());
 

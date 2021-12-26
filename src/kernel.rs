@@ -1,15 +1,13 @@
-use gtk::prelude::{BuilderExtManual, LabelExt};
-use gtk::{Builder, Label};
+use gtk::{prelude::LabelExt, Builder};
+
 use sysinfo::{RefreshKind, System, SystemExt};
 
-use crate::could_not_get;
+use crate::util::get_widget;
 
 pub fn setup(builder: &Builder) {
     let sys = System::new_with_specifics(RefreshKind::new());
 
-    let label_kernel_version: Label = builder
-        .object("label_kernel_version")
-        .expect(could_not_get!("label_kernel_version"));
+    let label_kernel_version: gtk::Label = get_widget("label_kernel_version", &builder);
 
     let kernel_version = sys.kernel_version();
     let kernel_version = match kernel_version {
