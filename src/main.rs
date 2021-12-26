@@ -51,7 +51,7 @@ fn build_ui(application: &gtk::Application) {
 
     // ==========[ Window ]==========
 
-    let window: gtk::ApplicationWindow = get_widget("window_main", &builder);
+    let window = get_widget::<gtk::ApplicationWindow>("window_main", &builder);
     window.set_application(Some(application));
 
     window.connect_screen_changed(set_visual);

@@ -14,7 +14,7 @@ use crate::drawing::draw_image_if_dirty;
 use crate::image::Image;
 use crate::util::get_widget;
 
-pub fn build_bar<F1: 'static, F2: 'static>(
+pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
     builder: &gtk::Builder,
     widget_name: &str,
     width: i32,
@@ -23,13 +23,13 @@ pub fn build_bar<F1: 'static, F2: 'static>(
     f1: F1,
     f2: F2,
 ) where
-    F1: Fn() -> sysinfo::System + std::marker::Send,
-    F2: Fn(&mut sysinfo::System) -> f64 + std::marker::Send,
+    F1: FnOnce() -> T + std::marker::Send,
+    F2: Fn(&mut T) -> f64 + std::marker::Send,
 {
     let width_f64 = width as f64;
     let height_f64 = height as f64;
 
-    let drawing_area: gtk::DrawingArea = get_widget(widget_name, &builder);
+    let drawing_area = get_widget::<gtk::DrawingArea>(widget_name, &builder);
 
     drawing_area.set_size_request(width, height);
 
@@ -50,7 +50,7 @@ pub fn build_bar<F1: 'static, F2: 'static>(
 
     // Spawn the worker thread
     thread::spawn(glib::clone!(@strong ready_tx => move || {
-        let mut sys = f1();
+        let mut data = f1();
 
         for mut image in rx.iter() {
             image.with_surface(|surface| {
@@ -61,7 +61,7 @@ pub fn build_bar<F1: 'static, F2: 'static>(
 
                 // =====[ bar ]=====
 
-                cr.rectangle(0.0, 0.0, width_f64 * f2(&mut sys), height_f64);
+                cr.rectangle(0.0, 0.0, width_f64 * f2(&mut data), height_f64);
                 cr.fill().expect("Failed to fill bar");
 
                 // =====[ border ]=====
@@ -105,7 +105,7 @@ pub fn build_bar<F1: 'static, F2: 'static>(
         // the worker thread
         let tx = &tx;
         let image = image.replace(new_image);
-        let _ = tx.send(image);
+        tx.send(image).unwrap();
 
         drawing_area.queue_draw();
 
