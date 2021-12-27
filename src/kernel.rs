@@ -12,7 +12,7 @@ pub fn setup(builder: &Builder) {
     let kernel_version = sys.kernel_version();
     let kernel_version = match kernel_version {
         None => "not available",
-        Some(ref value) => value.as_str(),
+        Some(ref value) => &value,
     };
     label_kernel_version.set_text(kernel_version);
 }

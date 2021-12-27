@@ -97,8 +97,8 @@ fn update(
 fn update_disk(disk: &Disk, label: &gtk::Label, label_percent: &gtk::Label) {
     let (total, used, ratio) = get_disk_stats(disk);
 
-    label.set_text(format!("{:.1}  /  {:.1} GB", b_2_gb(used), b_2_gb(total)).as_str());
-    label_percent.set_text(format!("{:.1}%", 100.0 * ratio).as_str());
+    label.set_text(&format!("{:.1}  /  {:.1} GB", b_2_gb(used), b_2_gb(total)));
+    label_percent.set_text(&format!("{:.1}%", 100.0 * ratio));
 }
 
 fn get_disk_stats(disk: &Disk) -> (u64, u64, f64) {

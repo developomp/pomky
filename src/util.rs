@@ -30,9 +30,34 @@ pub fn msec_2_duration(millisecond: u32) -> Duration {
     return Duration::new(0, millisecond * 1_000_000);
 }
 
+/// convert bytes to a more sensible unit
+pub fn pretty_bytes(bytes: u64) -> String {
+    let bytes = bytes as f64;
+
+    const BYTES_IN_GIGABYTE: f64 = 1_000_000_000.;
+    if bytes >= BYTES_IN_GIGABYTE {
+        let kilobytes = bytes / BYTES_IN_GIGABYTE;
+        return format!("{:.1} GB", kilobytes);
+    }
+
+    const BYTES_IN_MEGABYTE: f64 = 1_000_000.;
+    if bytes >= BYTES_IN_MEGABYTE {
+        let megabytes = bytes / BYTES_IN_MEGABYTE;
+        return format!("{:.1} MB", megabytes);
+    }
+
+    const BYTES_IN_KILOBYTES: f64 = 1000.;
+    if bytes >= BYTES_IN_KILOBYTES {
+        let kilobytes = bytes / BYTES_IN_KILOBYTES;
+        return format!("{:.1} KB", kilobytes);
+    }
+
+    return format!("{:.1} B", bytes);
+}
+
 #[macro_export]
 macro_rules! could_not_get {
     ($name:expr) => {
-        format!("Couldn't get {}", $name).as_str()
+        &format!("Couldn't get {}", $name)
     };
 }

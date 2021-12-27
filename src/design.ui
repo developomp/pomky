@@ -620,6 +620,7 @@
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
+                <property name="column-homogeneous">True</property>
                 <child>
                   <object class="GtkLabel" id="label_memory_used">
                     <property name="visible">True</property>

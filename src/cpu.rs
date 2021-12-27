@@ -44,7 +44,7 @@ pub fn setup(builder: &gtk::Builder) {
     for i in 0..8 {
         build_bar(
             builder,
-            format!("drawing_area_cpu{}_percent", i).as_str(),
+            &format!("drawing_area_cpu{}_percent", i),
             120,
             6,
             CPU_UPDATE_INTERVAL as u64,
@@ -69,5 +69,5 @@ fn update(sys: &mut System, label_cpu_percent: &gtk::Label) {
         total_percent += processor.cpu_usage();
     }
 
-    label_cpu_percent.set_text(format!("{:.1}%", total_percent / 8.0).as_str());
+    label_cpu_percent.set_text(&format!("{:.1}%", total_percent / 8.0));
 }

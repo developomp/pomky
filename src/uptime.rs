@@ -33,18 +33,18 @@ fn update_uptime(label: &gtk::Label, mut uptime: u64) {
         days = uptime / SECONDS_IN_DAY;
         uptime -= days * SECONDS_IN_DAY;
 
-        result.push_str(format!("{} days ", days).as_str());
+        result.push_str(&format!("{} days ", days));
     }
 
     if uptime > SECONDS_IN_HOUR {
         hours = uptime / SECONDS_IN_HOUR;
         uptime -= hours * SECONDS_IN_HOUR;
 
-        result.push_str(format!("{} hours ", hours).as_str());
+        result.push_str(&format!("{} hours ", hours));
     }
 
     minutes = uptime / SECONDS_IN_MINUTE;
-    result.push_str(format!("{} minutes", minutes).as_str());
+    result.push_str(&format!("{} minutes", minutes));
 
     label.set_text(&result);
 }

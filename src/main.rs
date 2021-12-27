@@ -1,9 +1,10 @@
 mod bar;
 mod cpu;
 mod disk;
-pub mod image;
+mod image;
 mod kernel;
 mod memory;
+mod network;
 mod uptime;
 mod util;
 
@@ -72,6 +73,7 @@ fn build_ui(application: &gtk::Application) {
     uptime::setup(&builder);
     cpu::setup(&builder);
     memory::setup(&builder);
+    network::setup(&builder);
     disk::setup(&builder);
 
     window.show_all();

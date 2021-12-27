@@ -66,10 +66,10 @@ fn update(
 ) {
     let (mem_used, mem_total, ratio) = get_mem_stats(&sys);
 
-    label_memory_used.set_text(format!("{:.1} GB", kib_2_gb(mem_used)).as_str());
-    label_memory_total.set_text(format!("{:.1} GB", kib_2_gb(mem_total)).as_str());
-    label_memory_free.set_text(format!("{:.1} GB", kib_2_gb(sys.free_memory())).as_str());
-    label_memory_percent.set_text(format!("{:.1}%", 100.0 * ratio).as_str());
+    label_memory_used.set_text(&format!("{:.1} GB", kib_2_gb(mem_used)));
+    label_memory_total.set_text(&format!("{:.1} GB", kib_2_gb(mem_total)));
+    label_memory_free.set_text(&format!("{:.1} GB", kib_2_gb(sys.free_memory())));
+    label_memory_percent.set_text(&format!("{:.1}%", 100.0 * ratio));
 }
 
 fn get_mem_stats(sys: &System) -> (u64, u64, f64) {
