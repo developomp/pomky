@@ -3,7 +3,7 @@
 use gtk;
 use gtk::cairo::Context;
 use gtk::glib;
-use gtk::prelude::{Continue, WidgetExt};
+use gtk::prelude::{Continue, Inhibit, WidgetExt};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -42,20 +42,20 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
 
     // apply changes to the image
     drawing_area.connect_draw(
-        glib::clone!(@weak workspace => @default-return gtk::Inhibit(false), move |_, cr| {
+        glib::clone!(@weak workspace => @default-return Inhibit(false), move |_, cr| {
             let (ref current_image, _) = *workspace;
 
             current_image.borrow_mut().with_surface(|surface| {
                 // Capture reference to the surface
-                cr.set_source_surface(surface, 0.0, 0.0).expect("The surface has an invalid state");
+                cr.set_source_surface(surface, 0.0, 0.0).unwrap();
 
-                cr.paint().expect("Invalid cairo surface state");
+                cr.paint().unwrap();
 
                 // Release reference to the surface again (removing this line causes an error)
                 cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
             });
 
-            return gtk::Inhibit(false);
+            return Inhibit(false);
         }),
     );
 
@@ -66,7 +66,7 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
 
         for mut received_image in worker_thread_rx.iter() {
             received_image.with_surface(|surface| {
-                let cr = Context::new(surface).expect("Can't create a Cairo context");
+                let cr = Context::new(surface).unwrap();
 
                 cr.set_source_rgb(1.0, 1.0, 1.0);
                 cr.set_line_width(2.0);
@@ -74,12 +74,12 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
                 // =====[ border ]=====
 
                 cr.rectangle(0.0, 0.0, width_f64, height_f64);
-                cr.stroke().expect("Failed to draw bar outline");
+                cr.stroke().unwrap();
 
                 // =====[ bar ]=====
 
                 cr.rectangle(0.0, 0.0, width_f64 * f2(&mut data), height_f64);
-                cr.fill().expect("Failed to fill bar");
+                cr.fill().unwrap();
 
                 surface.flush();
             });
@@ -93,10 +93,10 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
     // main thread
     // swap images from a double-buffer-like memory
     main_thread_rx.attach(None, move |received_image| {
-        let (ref old_image, ref worker_thread_tx) = *workspace;
+        let (ref current_image, ref worker_thread_tx) = *workspace;
 
-        // replace stored image with a new one
-        let old_image = old_image.replace(received_image);
+        // replace image with a new one
+        let old_image = current_image.replace(received_image);
         // and send the old one back to the worker thread
         worker_thread_tx.send(old_image).unwrap();
 
