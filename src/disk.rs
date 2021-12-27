@@ -6,7 +6,7 @@ use sysinfo::{Disk, DiskExt, RefreshKind, System, SystemExt};
 use crate::bar::build_bar;
 use crate::util::{b_2_gb, get_widget};
 
-const DISK_UPDATE_INTERVAL: u32 = 5;
+const DISK_UPDATE_INTERVAL: u32 = 30_000;
 
 pub fn setup(builder: &gtk::Builder) {
     let label_disk_root = get_widget("label_disk_root", &builder);

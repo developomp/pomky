@@ -2,7 +2,7 @@ use sysinfo::{ProcessorExt, RefreshKind, System, SystemExt};
 
 use crate::bar::build_bar;
 
-const CPU_UPDATE_INTERVAL: u32 = 1;
+const CPU_UPDATE_INTERVAL: u32 = 500;
 
 pub fn setup(builder: &gtk::Builder) {
     build_bar(

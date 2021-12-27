@@ -6,7 +6,7 @@ use sysinfo::{RefreshKind, System, SystemExt};
 use crate::util::get_widget;
 use crate::{SECONDS_IN_DAY, SECONDS_IN_HOUR, SECONDS_IN_MINUTE};
 
-const UPTIME_UPDATE_INTERVAL: u32 = 60;
+const UPTIME_UPDATE_INTERVAL: u32 = 60_000;
 
 pub fn setup(builder: &Builder) {
     let label_uptime = get_widget("label_uptime", &builder);

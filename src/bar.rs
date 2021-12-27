@@ -28,7 +28,7 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
 {
     let width_f64 = width as f64;
     let height_f64 = height as f64;
-    let delay = Duration::from_secs(update_interval);
+    let delay = Duration::from_millis(update_interval);
 
     let drawing_area = get_widget::<gtk::DrawingArea>(widget_name, &builder);
     drawing_area.set_size_request(width, height);
