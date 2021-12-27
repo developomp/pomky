@@ -56,7 +56,7 @@ pub fn setup(builder: &gtk::Builder) {
         );
     }
 
-    glib::timeout_add_seconds_local(DISK_UPDATE_INTERVAL, move || {
+    glib::timeout_add_seconds_local(DISK_UPDATE_INTERVAL / 1000, move || {
         update(
             &label_disk_root,
             &label_disk_root_percent,

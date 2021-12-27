@@ -43,7 +43,7 @@ pub fn setup(builder: &Builder) {
         },
     );
 
-    glib::timeout_add_seconds_local(MEMORY_UPDATE_INTERVAL, move || {
+    glib::timeout_add_seconds_local(MEMORY_UPDATE_INTERVAL / 1000, move || {
         sys.refresh_memory();
         update(
             &sys,

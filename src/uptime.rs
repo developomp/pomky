@@ -16,7 +16,7 @@ pub fn setup(builder: &Builder) {
     update_uptime(&label_uptime, sys.uptime());
 
     // update every minute
-    glib::timeout_add_seconds_local(UPTIME_UPDATE_INTERVAL, move || {
+    glib::timeout_add_seconds_local(UPTIME_UPDATE_INTERVAL / 1000, move || {
         update_uptime(&label_uptime, sys.uptime());
 
         return glib::Continue(true);
