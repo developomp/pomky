@@ -1,7 +1,7 @@
 /// Bar graph
 /// taken from [gtk3-rs cairo thread example](https://github.com/gtk-rs/gtk3-rs/tree/67f3a1833d303ef292def8d341880f4a92445a5c/examples/cairo_threads)
 use gtk;
-use gtk::cairo::Context;
+use gtk::cairo::{Context, Operator};
 use gtk::glib;
 use gtk::prelude::{Continue, Inhibit, WidgetExt};
 
@@ -68,10 +68,18 @@ pub fn build_bar<F1: 'static, F2: 'static, T: 'static>(
             received_image.with_surface(|surface| {
                 let cr = Context::new(surface).unwrap();
 
-                cr.set_source_rgb(1.0, 1.0, 1.0);
-                cr.set_line_width(2.0);
+                // =====[ blear surface ]=====
+
+                cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
+                cr.set_operator(Operator::Clear);
+                cr.rectangle(0.0, 0.0, width_f64, height_f64);
+                cr.paint_with_alpha(1.0).unwrap();
+                cr.set_operator(Operator::Over);
 
                 // =====[ border ]=====
+
+                cr.set_source_rgb(1.0, 1.0, 1.0);
+                cr.set_line_width(2.0);
 
                 cr.rectangle(0.0, 0.0, width_f64, height_f64);
                 cr.stroke().unwrap();
