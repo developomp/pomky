@@ -1,11 +1,11 @@
 mod bar;
 mod cpu;
 mod disk;
+mod general;
 mod image;
-mod kernel;
 mod memory;
 mod network;
-mod uptime;
+
 mod util;
 
 use gdk::{ffi, Screen};
@@ -69,8 +69,7 @@ fn build_ui(application: &gtk::Application) {
         window.move_(ffi::gdk_screen_width() - window.default_width() - 10, 40);
     }
 
-    kernel::setup(&builder);
-    uptime::setup(&builder);
+    general::setup(&builder);
     cpu::setup(&builder);
     memory::setup(&builder);
     network::setup(&builder);
