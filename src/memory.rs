@@ -4,7 +4,7 @@ use gtk::Builder;
 
 use sysinfo::{RefreshKind, System, SystemExt};
 
-use crate::bar::build_bar;
+use crate::custom_components::bar::build_bar;
 use crate::util::{get_widget, kib_2_gb};
 
 const MEMORY_UPDATE_INTERVAL: u32 = 1_000;

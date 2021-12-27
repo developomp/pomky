@@ -3,7 +3,7 @@ use gtk::prelude::LabelExt;
 
 use sysinfo::{Disk, DiskExt, RefreshKind, System, SystemExt};
 
-use crate::bar::build_bar;
+use crate::custom_components::bar::build_bar;
 use crate::util::{b_2_gb, get_widget};
 
 const DISK_UPDATE_INTERVAL: u32 = 30_000;

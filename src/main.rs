@@ -1,4 +1,3 @@
-mod bar;
 mod cpu;
 mod disk;
 mod general;
@@ -6,6 +5,7 @@ mod image;
 mod memory;
 mod network;
 
+mod custom_components;
 mod util;
 
 use gdk::{ffi, Screen};
