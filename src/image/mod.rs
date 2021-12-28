@@ -6,9 +6,9 @@ use std::rc::Rc;
 
 use image_holder::ImageHolder;
 
-/// Our custom image type. This stores a heap allocated byte array for the pixels for each of our
-/// images, can be sent safely between threads and can be temporarily converted to a Cairo image
-/// surface for drawing operations
+/// Stores a heap allocated byte array for the pixels for each of the images.
+/// It can be sent safely between threads and can be temporarily converted to a
+/// Cairo image surface for drawing operations.
 #[derive(Clone)]
 pub struct Image {
     width: i32,
@@ -40,7 +40,7 @@ impl Image {
             // The surface will own the image for the scope of the block below
             let surface = ImageSurface::create_for_data(
                 holder,
-                Format::Rgb24,
+                Format::ARgb32,
                 self.width,
                 self.height,
                 stride,

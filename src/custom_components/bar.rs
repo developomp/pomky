@@ -22,26 +22,25 @@ pub fn build_bar<T: 'static, F1: 'static, F2: 'static>(
         update_interval,
         f1,
         f2,
-        |cr, width_f64, height_f64, value| {
-            // =====[ blear surface ]=====
+        |cr, &width_f64, &height_f64, &value| {
+            // =====[ Clear surface ]=====
 
             cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
             cr.set_operator(Operator::Clear);
-            cr.rectangle(0.0, 0.0, *width_f64, *height_f64);
+            cr.rectangle(0.0, 0.0, width_f64, height_f64);
             cr.paint_with_alpha(1.0).unwrap();
             cr.set_operator(Operator::Over);
 
-            // =====[ border ]=====
+            // =====[ Border ]=====
 
             cr.set_source_rgb(1.0, 1.0, 1.0);
             cr.set_line_width(2.0);
-
-            cr.rectangle(0.0, 0.0, *width_f64, *height_f64);
+            cr.rectangle(0.0, 0.0, width_f64, height_f64);
             cr.stroke().unwrap();
 
-            // =====[ bar ]=====
+            // =====[ Bar ]=====
 
-            cr.rectangle(0.0, 0.0, width_f64 * value, *height_f64);
+            cr.rectangle(0.0, 0.0, width_f64 * value, height_f64);
             cr.fill().unwrap();
         },
     )
