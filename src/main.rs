@@ -56,7 +56,7 @@ fn build_ui(application: &gtk::Application) {
 
     window.connect_screen_changed(set_visual);
     window.connect_draw(|_window, ctx| {
-        ctx.set_source_rgba(0.0, 0.0, 0.0, 50.0 / 255.0);
+        ctx.set_source_rgba(0.0, 0.0, 0.0, 0.25);
         ctx.paint().expect("Failed to paint background");
 
         return gtk::Inhibit(false);
