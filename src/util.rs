@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use gdk::{glib::Object, prelude::IsA};
 use gtk::prelude::BuilderExtManual;
 
@@ -23,11 +21,6 @@ pub fn b_2_gb(bytes: u64) -> f64 {
 
 pub fn get_widget<T: IsA<Object>>(name: &str, builder: &gtk::Builder) -> T {
     return builder.object(name).expect(could_not_get!(name));
-}
-
-/// converts millisecond to Duration
-pub fn msec_2_duration(millisecond: u32) -> Duration {
-    return Duration::new(0, millisecond * 1_000_000);
 }
 
 /// convert bytes to a more sensible unit
