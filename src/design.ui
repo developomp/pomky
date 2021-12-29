@@ -185,7 +185,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkDrawingArea" id="drawing_area_cpu_percent_graph">
+                  <object class="GtkDrawingArea" id="cpu_graph">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                   </object>
@@ -233,7 +233,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea" id="drawing_area_cpu0_percent">
+                      <object class="GtkDrawingArea" id="cpu0_bar">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -244,7 +244,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea">
+                      <object class="GtkDrawingArea" id="cpu0_graph">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -282,7 +282,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea" id="drawing_area_cpu1_percent">
+                      <object class="GtkDrawingArea" id="cpu1_bar">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -293,7 +293,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea">
+                      <object class="GtkDrawingArea" id="cpu1_graph">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -331,7 +331,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea" id="drawing_area_cpu2_percent">
+                      <object class="GtkDrawingArea" id="cpu2_bar">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -342,7 +342,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea">
+                      <object class="GtkDrawingArea" id="cpu2_graph">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -380,7 +380,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea" id="drawing_area_cpu3_percent">
+                      <object class="GtkDrawingArea" id="cpu3_bar">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -391,7 +391,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea">
+                      <object class="GtkDrawingArea" id="cpu3_graph">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -429,7 +429,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea" id="drawing_area_cpu4_percent">
+                      <object class="GtkDrawingArea" id="cpu4_bar">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -440,7 +440,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea">
+                      <object class="GtkDrawingArea" id="cpu4_graph">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -457,7 +457,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="cpu4_percent_graph">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="orientation">vertical</property>
@@ -478,7 +478,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea" id="drawing_area_cpu5_percent">
+                      <object class="GtkDrawingArea" id="cpu5_bar">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -489,7 +489,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea">
+                      <object class="GtkDrawingArea" id="cpu5_graph">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -527,7 +527,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea">
+                      <object class="GtkDrawingArea" id="cpu6_bar">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -538,7 +538,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea" id="drawing_area_cpu6_percent">
+                      <object class="GtkDrawingArea" id="cpu6_graph">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -576,7 +576,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea" id="drawing_area_cpu7_percent">
+                      <object class="GtkDrawingArea" id="cpu7_bar">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
@@ -587,7 +587,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkDrawingArea">
+                      <object class="GtkDrawingArea" id="cpu7_graph">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                       </object>
