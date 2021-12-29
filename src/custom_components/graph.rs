@@ -31,7 +31,7 @@ pub fn build_graph(
 
         draw_tx.send((i_start, max, values)).unwrap();
 
-        if i_start > width as usize {
+        if i_start >= width as usize {
             i_start = 0;
         }
 
