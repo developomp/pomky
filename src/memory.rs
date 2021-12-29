@@ -1,4 +1,4 @@
-use gdk::glib;
+use gdk::glib::{self, Sender};
 use gtk::prelude::LabelExt;
 use gtk::Builder;
 
@@ -16,41 +16,27 @@ pub fn setup(builder: &Builder) {
     let label_memory_percent = get_widget("label_memory_percent", &builder);
 
     let mut sys = System::new_with_specifics(RefreshKind::new().with_memory());
-    sys.refresh_memory();
+
+    let (tx, rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+
+    build_bar(get_widget("memory_usage_bar", &builder), 500, 6, rx);
+
     update(
-        &sys,
+        &mut sys,
         &label_memory_used,
         &label_memory_total,
         &label_memory_free,
         &label_memory_percent,
+        &tx,
     );
-
-    build_bar(
-        &builder,
-        "memory_usage_bar",
-        500,
-        6,
-        MEMORY_UPDATE_INTERVAL.into(),
-        || {
-            return System::new_with_specifics(RefreshKind::new().with_memory());
-        },
-        |sys| {
-            sys.refresh_memory();
-
-            let (_, _, ratio) = get_mem_stats(&sys);
-
-            return ratio;
-        },
-    );
-
     glib::timeout_add_seconds_local(MEMORY_UPDATE_INTERVAL / 1000, move || {
-        sys.refresh_memory();
         update(
-            &sys,
+            &mut sys,
             &label_memory_used,
             &label_memory_total,
             &label_memory_free,
             &label_memory_percent,
+            &tx,
         );
 
         return glib::Continue(true);
@@ -58,24 +44,23 @@ pub fn setup(builder: &Builder) {
 }
 
 fn update(
-    sys: &System,
+    sys: &mut System,
     label_memory_used: &gtk::Label,
     label_memory_total: &gtk::Label,
     label_memory_free: &gtk::Label,
     label_memory_percent: &gtk::Label,
+    tx: &Sender<f64>,
 ) {
-    let (mem_used, mem_total, ratio) = get_mem_stats(&sys);
+    sys.refresh_memory();
+
+    let mem_used = sys.used_memory();
+    let mem_total = sys.total_memory();
+    let ratio = mem_used as f64 / mem_total as f64;
 
     label_memory_used.set_text(&format!("{:.1} GB", kib_2_gb(mem_used)));
     label_memory_total.set_text(&format!("{:.1} GB", kib_2_gb(mem_total)));
     label_memory_free.set_text(&format!("{:.1} GB", kib_2_gb(sys.free_memory())));
     label_memory_percent.set_text(&format!("{:.1}%", 100.0 * ratio));
-}
 
-fn get_mem_stats(sys: &System) -> (u64, u64, f64) {
-    let mem_used = sys.used_memory();
-    let mem_total = sys.total_memory();
-    let ratio = mem_used as f64 / mem_total as f64;
-
-    return (mem_used, mem_total, ratio);
+    tx.send(ratio).unwrap();
 }

@@ -47,7 +47,7 @@ fn main() {
 
 fn build_ui(application: &gtk::Application) {
     // load design.ui
-    let builder = gtk::Builder::from_string(include_str!("design.ui"));
+    let builder: gtk::Builder = gtk::Builder::from_string(include_str!("design.ui"));
 
     // ==========[ Window ]==========
 
@@ -56,7 +56,7 @@ fn build_ui(application: &gtk::Application) {
 
     window.connect_screen_changed(set_visual);
     window.connect_draw(|_window, ctx| {
-        ctx.set_source_rgba(0.0, 0.0, 0.0, 0.25);
+        ctx.set_source_rgba(0.15, 0.15, 0.15, 0.5);
         ctx.paint().expect("Failed to paint background");
 
         return gtk::Inhibit(false);
