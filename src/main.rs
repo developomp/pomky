@@ -13,10 +13,6 @@ use gtk::prelude::{ApplicationExt, ApplicationExtManual, CssProviderExt, GtkWind
 
 use util::get_widget;
 
-const SECONDS_IN_DAY: u64 = 86400;
-const SECONDS_IN_HOUR: u64 = 3600;
-const SECONDS_IN_MINUTE: u64 = 60;
-
 fn main() {
     let application = gtk::Application::new(Some("com.developomp.pomky"), Default::default());
 

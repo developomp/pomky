@@ -4,7 +4,10 @@ use gtk::Builder;
 use sysinfo::{ComponentExt, RefreshKind, System, SystemExt};
 
 use crate::util::get_widget;
-use crate::{SECONDS_IN_DAY, SECONDS_IN_HOUR, SECONDS_IN_MINUTE};
+
+const SECONDS_IN_DAY: u64 = 86400;
+const SECONDS_IN_HOUR: u64 = 3600;
+const SECONDS_IN_MINUTE: u64 = 60;
 
 const UPTIME_UPDATE_INTERVAL: u32 = 60_000;
 
