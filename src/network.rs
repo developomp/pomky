@@ -26,6 +26,7 @@ pub fn setup(builder: &gtk::Builder) {
 
     let (data_tx, data_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
     let (ethernet_up_tx, ethernet_up_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (ethernet_down_tx, ethernet_down_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
     data_rx.attach(None, move |(device_type, transmitted, received)| {
         match device_type {
@@ -34,6 +35,7 @@ pub fn setup(builder: &gtk::Builder) {
                 update_label(&label_ethernet_download_speed, received);
 
                 ethernet_up_tx.send(transmitted).unwrap();
+                ethernet_down_tx.send(received).unwrap();
             }
 
             DEVICE_WIFI => {
@@ -49,9 +51,17 @@ pub fn setup(builder: &gtk::Builder) {
 
     build_graph(
         get_widget("drawing_area_ethernet_upload", &builder),
-        250,
+        248,
         100,
         ethernet_up_rx,
+        None,
+    );
+
+    build_graph(
+        get_widget("drawing_area_ethernet_download", &builder),
+        248,
+        100,
+        ethernet_down_rx,
         None,
     );
 
