@@ -6,7 +6,7 @@ use crate::custom_components::bar::build_bar;
 use crate::custom_components::graph::build_graph;
 use crate::util::{get_widget, msec_2_duration};
 
-const CPU_UPDATE_INTERVAL: u32 = 500;
+const CPU_UPDATE_INTERVAL: u32 = 500; // in milliseconds
 
 pub fn setup(builder: &gtk::Builder) {
     let mut sys = System::new_with_specifics(RefreshKind::new());

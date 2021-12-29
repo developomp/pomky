@@ -7,7 +7,7 @@ use sysinfo::{RefreshKind, System, SystemExt};
 use crate::custom_components::bar::build_bar;
 use crate::util::{get_widget, kib_2_gb};
 
-const MEMORY_UPDATE_INTERVAL: u32 = 1_000;
+const MEMORY_UPDATE_INTERVAL: u32 = 1; // in seconds
 
 pub fn setup(builder: &Builder) {
     let label_memory_used = get_widget("label_memory_used", &builder);
@@ -29,7 +29,7 @@ pub fn setup(builder: &Builder) {
         &label_memory_percent,
         &tx,
     );
-    glib::timeout_add_seconds_local(MEMORY_UPDATE_INTERVAL / 1000, move || {
+    glib::timeout_add_seconds_local(MEMORY_UPDATE_INTERVAL, move || {
         update(
             &mut sys,
             &label_memory_used,

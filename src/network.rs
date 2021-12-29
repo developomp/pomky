@@ -9,8 +9,7 @@ use sysinfo::{NetworkExt, RefreshKind, System, SystemExt};
 use crate::custom_components::graph::build_graph;
 use crate::util::{get_widget, pretty_bytes};
 
-// must be set to 1000 to keep the calculation somewhat accurate
-const NETWORK_UPDATE_INTERVAL: u32 = 1000;
+// interval fixed at 1 sec to keep speed data accurate
 
 pub const DEVICE_ETHERNET: &str = "enp3s0";
 pub const DEVICE_WIFI: &str = "wlp5s0";
@@ -69,7 +68,7 @@ pub fn setup(builder: &gtk::Builder) {
     );
 
     update(&mut sys, &data_tx);
-    glib::timeout_add_seconds_local(NETWORK_UPDATE_INTERVAL / 1000, move || {
+    glib::timeout_add_seconds_local(1, move || {
         update(&mut sys, &data_tx);
 
         return glib::Continue(true);
