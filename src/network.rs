@@ -21,20 +21,13 @@ pub fn setup(builder: &gtk::Builder) {
     let label_wifi_upload_speed = get_widget::<Label>("label_wifi_up_speed", &builder);
     let label_wifi_download_speed = get_widget::<Label>("label_wifi_down_speed", &builder);
 
-    let (tx, rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
-    let (ethernet_up_tx, ethernet_up_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
-
     let mut sys =
         System::new_with_specifics(RefreshKind::new().with_networks().with_networks_list());
 
-    build_graph(
-        get_widget("drawing_area_ethernet_upload", &builder),
-        250,
-        100,
-        ethernet_up_rx,
-    );
+    let (data_tx, data_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (ethernet_up_tx, ethernet_up_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
-    rx.attach(None, move |(device_type, transmitted, received)| {
+    data_rx.attach(None, move |(device_type, transmitted, received)| {
         match device_type {
             DEVICE_ETHERNET => {
                 update_label(&label_ethernet_upload_speed, transmitted);
@@ -54,15 +47,23 @@ pub fn setup(builder: &gtk::Builder) {
         return Continue(true);
     });
 
-    update(&mut sys, &tx);
+    build_graph(
+        get_widget("drawing_area_ethernet_upload", &builder),
+        250,
+        100,
+        ethernet_up_rx,
+        None,
+    );
+
+    update(&mut sys, &data_tx);
     glib::timeout_add_seconds_local(NETWORK_UPDATE_INTERVAL / 1000, move || {
-        update(&mut sys, &tx);
+        update(&mut sys, &data_tx);
 
         return glib::Continue(true);
     });
 }
 
-fn update(sys: &mut System, tx: &Sender<(&str, u64, u64)>) {
+fn update(sys: &mut System, data_tx: &Sender<(&str, u64, u64)>) {
     sys.refresh_networks();
 
     for (_, (interface_name, data)) in sys.networks().into_iter().enumerate() {
@@ -71,11 +72,13 @@ fn update(sys: &mut System, tx: &Sender<(&str, u64, u64)>) {
 
         match interface_name.as_str() {
             DEVICE_ETHERNET => {
-                tx.send((DEVICE_ETHERNET, transmitted, received)).unwrap();
+                data_tx
+                    .send((DEVICE_ETHERNET, transmitted, received))
+                    .unwrap();
             }
 
             DEVICE_WIFI => {
-                tx.send((DEVICE_WIFI, transmitted, received)).unwrap();
+                data_tx.send((DEVICE_WIFI, transmitted, received)).unwrap();
             }
 
             _ => {}

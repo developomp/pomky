@@ -9,11 +9,34 @@ pub fn build_graph(
     width: i32,
     height: i32,
     graph_rx: Receiver<u64>,
+    max_value: Option<u64>,
 ) {
     let (draw_tx, draw_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
-    graph_rx.attach(None, move |_| {
-        draw_tx.send((0_usize, 0_u64, [0.0; 500])).unwrap();
+    // values used to draw the graph
+    let mut values = [0; 500];
+
+    // index of the starting point of circular array
+    let mut i_start: usize = 0;
+
+    // fill circular array
+    graph_rx.attach(None, move |value| {
+        values[i_start] = value;
+
+        let max = if max_value.is_none() {
+            highest_in_array(&values)
+        } else {
+            max_value.unwrap()
+        };
+
+        draw_tx.send((i_start, max, values)).unwrap();
+
+        if i_start > width as usize {
+            i_start = 0;
+        }
+
+        i_start += 1;
+
         return Continue(true);
     });
 
@@ -22,7 +45,7 @@ pub fn build_graph(
         width,
         height,
         draw_rx,
-        |cr, &width_f64, &height_f64, &(index, max, values)| {
+        move |cr, &width_f64, &height_f64, &(index, max, values)| {
             cr.set_source_rgb(1.0, 1.0, 1.0);
             cr.set_line_width(2.0);
 
@@ -33,29 +56,46 @@ pub fn build_graph(
 
             // =====[ Graph ]=====
 
-            let mut val_i = index.clone();
-            let mut pos_i = 0.0;
+            let mut i_val = index.clone();
+            let mut i_pos = 0; // position of the current line being drawn (from right to left)
 
             loop {
-                let height_scale = values[val_i] as f64 / max as f64;
-                // println!("{}", height_scale);
+                let height_scale = values[i_val] as f64 / max as f64;
+                let height_scale = if height_scale.is_nan() {
+                    0.0
+                } else {
+                    height_scale
+                };
 
-                cr.move_to(width_f64 - pos_i as f64, height_f64);
-                cr.line_to(width_f64 - pos_i as f64, height_f64 * height_scale);
+                cr.move_to(width_f64 - 1.0 - i_pos as f64, height_f64);
+                cr.line_to(
+                    width_f64 - 1.0 - i_pos as f64,
+                    height_f64 - height_f64 * height_scale,
+                );
 
-                val_i += 1;
-                pos_i += 1.0;
-
-                if pos_i >= 500.0 {
-                    break;
+                if i_val == 0 {
+                    i_val = width as usize;
                 }
 
-                if val_i > 499 {
-                    val_i = 0;
+                i_val -= 1;
+                i_pos += 1;
+
+                if i_pos >= width - 2 {
+                    break;
                 }
             }
 
             cr.stroke().unwrap();
         },
     )
+}
+
+fn highest_in_array(array: &[u64]) -> u64 {
+    let mut max = 0;
+
+    for elem in array {
+        max = *elem.max(&max);
+    }
+
+    return max;
 }
