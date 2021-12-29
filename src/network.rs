@@ -15,6 +15,9 @@ const NETWORK_UPDATE_INTERVAL: u32 = 1000;
 pub const DEVICE_ETHERNET: &str = "enp3s0";
 pub const DEVICE_WIFI: &str = "wlp5s0";
 
+const GRAPH_WIDTH: i32 = 248;
+const GRAPH_HEIGHT: i32 = 50;
+
 pub fn setup(builder: &gtk::Builder) {
     let label_ethernet_upload_speed = get_widget::<Label>("label_ethernet_up_speed", &builder);
     let label_ethernet_download_speed = get_widget::<Label>("label_ethernet_down_speed", &builder);
@@ -51,16 +54,16 @@ pub fn setup(builder: &gtk::Builder) {
 
     build_graph(
         get_widget("drawing_area_ethernet_upload", &builder),
-        248,
-        100,
+        GRAPH_WIDTH,
+        GRAPH_HEIGHT,
         ethernet_up_rx,
         None,
     );
 
     build_graph(
         get_widget("drawing_area_ethernet_download", &builder),
-        248,
-        100,
+        GRAPH_WIDTH,
+        GRAPH_HEIGHT,
         ethernet_down_rx,
         None,
     );
