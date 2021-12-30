@@ -8,10 +8,12 @@ mod network;
 mod custom_components;
 mod util;
 
-use gdk::{ffi, Screen};
 use gtk::prelude::{ApplicationExt, ApplicationExtManual, CssProviderExt, GtkWindowExt, WidgetExt};
 
 use util::get_widget;
+
+const TOP_MARGIN: i32 = 40;
+const RIGHT_MARGIN: i32 = 10;
 
 fn main() {
     let application = gtk::Application::new(Some("com.developomp.pomky"), Default::default());
@@ -29,7 +31,7 @@ fn main() {
         // We give the CssProvided to the default screen so the CSS rules we added
         // can be applied to our window.
         gtk::StyleContext::add_provider_for_screen(
-            &Screen::default().expect("Error initializing gtk css provider."),
+            &gdk::Screen::default().expect("Error initializing gtk css provider."),
             &provider,
             gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
         );
@@ -62,7 +64,10 @@ fn build_ui(application: &gtk::Application) {
 
     // move window to upper right corner
     unsafe {
-        window.move_(ffi::gdk_screen_width() - window.default_width() - 10, 40);
+        window.move_(
+            gdk::ffi::gdk_screen_width() - window.default_width() - RIGHT_MARGIN,
+            TOP_MARGIN,
+        );
     }
 
     general::setup(&builder);
@@ -74,7 +79,7 @@ fn build_ui(application: &gtk::Application) {
     window.show_all();
 }
 
-fn set_visual(window: &gtk::ApplicationWindow, _screen: Option<&Screen>) {
+fn set_visual(window: &gtk::ApplicationWindow, _screen: Option<&gdk::Screen>) {
     if let Some(screen) = window.screen() {
         if let Some(ref visual) = screen.rgba_visual() {
             window.set_visual(Some(visual)); // crucial for transparency
