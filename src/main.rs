@@ -4,6 +4,7 @@ mod general;
 mod image;
 mod memory;
 mod network;
+mod processes;
 
 mod custom_components;
 mod util;
@@ -84,6 +85,7 @@ fn build_ui(application: &gtk::Application) {
     // =====[ Setup Stats ]=====
 
     general::setup(&builder);
+    processes::setup(&builder);
     cpu::setup(&builder);
     memory::setup(&builder);
     network::setup(&builder);
