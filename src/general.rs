@@ -9,7 +9,7 @@ const SECONDS_IN_DAY: u64 = 86400;
 const SECONDS_IN_HOUR: u64 = 3600;
 const SECONDS_IN_MINUTE: u64 = 60;
 
-const UPTIME_UPDATE_INTERVAL: u32 = 60; // in seconds
+const GENERAL_UPDATE_INTERVAL: u32 = 60; // in seconds
 
 pub fn setup(builder: &Builder) {
     let label_kernel_version = get_widget::<gtk::Label>("label_kernel_version", &builder);
@@ -30,7 +30,7 @@ pub fn setup(builder: &Builder) {
     update(&mut sys, &label_uptime, &label_temperature);
 
     // update every minute
-    glib::timeout_add_seconds_local(UPTIME_UPDATE_INTERVAL, move || {
+    glib::timeout_add_seconds_local(GENERAL_UPDATE_INTERVAL, move || {
         update(&mut sys, &label_uptime, &label_temperature);
 
         return glib::Continue(true);
