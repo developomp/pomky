@@ -7,9 +7,7 @@ If you're looking for an conky alternative written in rust, check out [iphands/r
 
 Designed using [glade](https://wiki.gnome.org/Apps/Glade).
 
-## Purpose
-
-To replace conky and [Vitals gnome extension](https://github.com/corecoding/Vitals).
+![screenshot](./screenshot.png)
 
 ## Requirements
 
@@ -22,12 +20,6 @@ To replace conky and [Vitals gnome extension](https://github.com/corecoding/Vita
 
 ```bash
 cargo run
-```
-
-### Testing
-
-```bash
-cargo test
 ```
 
 ### Building
