@@ -23,12 +23,14 @@ pub fn setup(builder: &gtk::Builder) {
     let label_wifi_upload_speed = get_widget::<Label>("label_wifi_up_speed", &builder);
     let label_wifi_download_speed = get_widget::<Label>("label_wifi_down_speed", &builder);
 
-    let mut sys =
-        System::new_with_specifics(RefreshKind::new().with_networks().with_networks_list());
-
     let (data_tx, data_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
     let (ethernet_up_tx, ethernet_up_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
     let (ethernet_down_tx, ethernet_down_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (wifi_up_tx, wifi_up_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (wifi_down_tx, wifi_down_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+
+    let mut sys =
+        System::new_with_specifics(RefreshKind::new().with_networks().with_networks_list());
 
     data_rx.attach(None, move |(device_type, transmitted, received)| {
         match device_type {
@@ -43,6 +45,9 @@ pub fn setup(builder: &gtk::Builder) {
             DEVICE_WIFI => {
                 update_label(&label_wifi_upload_speed, transmitted);
                 update_label(&label_wifi_download_speed, received);
+
+                wifi_up_tx.send(transmitted).unwrap();
+                wifi_down_tx.send(received).unwrap();
             }
 
             _ => {}
@@ -52,18 +57,32 @@ pub fn setup(builder: &gtk::Builder) {
     });
 
     build_graph(
-        get_widget("drawing_area_ethernet_upload", &builder),
+        get_widget("ethernet_upload_graph", &builder),
         GRAPH_WIDTH,
         GRAPH_HEIGHT,
         ethernet_up_rx,
         None,
     );
-
     build_graph(
-        get_widget("drawing_area_ethernet_download", &builder),
+        get_widget("ethernet_download_graph", &builder),
         GRAPH_WIDTH,
         GRAPH_HEIGHT,
         ethernet_down_rx,
+        None,
+    );
+
+    build_graph(
+        get_widget("wifi_upload_graph", &builder),
+        GRAPH_WIDTH,
+        GRAPH_HEIGHT,
+        wifi_up_rx,
+        None,
+    );
+    build_graph(
+        get_widget("wifi_download_graph", &builder),
+        GRAPH_WIDTH,
+        GRAPH_HEIGHT,
+        wifi_down_rx,
         None,
     );
 
