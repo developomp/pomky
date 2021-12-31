@@ -1183,6 +1183,7 @@
                   <object class="GtkDrawingArea" id="wifi_upload_graph">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="halign">start</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
@@ -1193,6 +1194,7 @@
                   <object class="GtkDrawingArea" id="wifi_download_graph">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
+                    <property name="halign">end</property>
                   </object>
                   <packing>
                     <property name="left-attach">1</property>
