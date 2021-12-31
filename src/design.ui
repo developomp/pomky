@@ -23,15 +23,27 @@
         <property name="orientation">vertical</property>
         <property name="baseline-position">top</property>
         <child>
-          <object class="GtkLabel" id="label_pomp_logo">
+          <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">20</property>
-            <property name="margin-bottom">20</property>
-            <property name="label" translatable="yes">{P}</property>
-            <style>
-              <class name="pomp-logo"/>
-            </style>
+            <property name="margin-top">15</property>
+            <property name="margin-bottom">15</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel" id="label_pomp_logo">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">{P}</property>
+                <style>
+                  <class name="pomp-logo"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -141,8 +153,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">20</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-top">15</property>
+                <property name="margin-bottom">15</property>
                 <property name="label" translatable="yes">CPU</property>
                 <style>
                   <class name="h1"/>
@@ -628,8 +640,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">20</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-top">15</property>
+                <property name="margin-bottom">15</property>
                 <property name="label" translatable="yes">RAM</property>
                 <style>
                   <class name="h1"/>
@@ -642,7 +654,7 @@
               </packing>
             </child>
             <child>
-              <!-- n-columns=3 n-rows=3 -->
+              <!-- n-columns=3 n-rows=4 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
@@ -707,6 +719,17 @@
                     <property name="top-attach">0</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkDrawingArea" id="memory_graph">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">3</property>
+                    <property name="width">3</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -731,8 +754,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">20</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-top">15</property>
+                <property name="margin-bottom">15</property>
                 <property name="label" translatable="yes">Network</property>
                 <style>
                   <class name="h1"/>
@@ -1096,8 +1119,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">20</property>
-                <property name="margin-bottom">20</property>
+                <property name="margin-top">15</property>
+                <property name="margin-bottom">15</property>
                 <property name="label" translatable="yes">Disk</property>
                 <style>
                   <class name="h1"/>

@@ -5,6 +5,7 @@ use gtk::Builder;
 use sysinfo::{RefreshKind, System, SystemExt};
 
 use crate::custom_components::bar::build_bar;
+use crate::custom_components::graph::build_graph;
 use crate::util::{get_widget, kib_2_gb};
 
 const MEMORY_UPDATE_INTERVAL: u32 = 1; // in seconds
@@ -17,9 +18,17 @@ pub fn setup(builder: &Builder) {
 
     let mut sys = System::new_with_specifics(RefreshKind::new().with_memory());
 
-    let (tx, rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (bar_tx, bar_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
+    let (graph_tx, graph_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
-    build_bar(get_widget("memory_usage_bar", &builder), 500, 6, rx);
+    build_bar(get_widget("memory_usage_bar", &builder), 500, 6, bar_rx);
+    build_graph(
+        get_widget("memory_graph", &builder),
+        500,
+        50,
+        graph_rx,
+        Some(100),
+    );
 
     update(
         &mut sys,
@@ -27,7 +36,8 @@ pub fn setup(builder: &Builder) {
         &label_memory_total,
         &label_memory_free,
         &label_memory_percent,
-        &tx,
+        &bar_tx,
+        &graph_tx,
     );
     glib::timeout_add_seconds_local(MEMORY_UPDATE_INTERVAL, move || {
         update(
@@ -36,7 +46,8 @@ pub fn setup(builder: &Builder) {
             &label_memory_total,
             &label_memory_free,
             &label_memory_percent,
-            &tx,
+            &bar_tx,
+            &graph_tx,
         );
 
         return glib::Continue(true);
@@ -49,7 +60,8 @@ fn update(
     label_memory_total: &gtk::Label,
     label_memory_free: &gtk::Label,
     label_memory_percent: &gtk::Label,
-    tx: &Sender<f64>,
+    bar_tx: &Sender<f64>,
+    graph_tx: &Sender<u64>,
 ) {
     sys.refresh_memory();
 
@@ -62,5 +74,6 @@ fn update(
     label_memory_free.set_text(&format!("{:.1} GB", kib_2_gb(sys.free_memory())));
     label_memory_percent.set_text(&format!("{:.1}%", 100.0 * ratio));
 
-    tx.send(ratio).unwrap();
+    bar_tx.send(ratio).unwrap();
+    graph_tx.send((100.0 * ratio) as u64).unwrap();
 }
