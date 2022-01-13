@@ -9,6 +9,7 @@ mod processes;
 mod custom_components;
 mod util;
 
+use gdk::set_allowed_backends;
 use gtk::prelude::{ApplicationExt, ApplicationExtManual, CssProviderExt, GtkWindowExt, WidgetExt};
 
 use util::get_widget;
@@ -23,6 +24,7 @@ fn main() {
     application.connect_activate(|_| {});
 
     application.connect_startup(|app| {
+        set_allowed_backends("x11"); // doesn't work well in wayland without it
         setup_css();
         build_ui(app);
     });
