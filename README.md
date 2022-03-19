@@ -1,5 +1,7 @@
 # Pomky
 
+[![what's this?](https://img.shields.io/badge/what's_this%3F-grey?style=for-the-badge)](https://developomp.com/portfolio/pomky)
+
 A conky-like system monitor made for the sole purpose of teaching myself rust-lang.
 
 It is not as configurable, modular, or feature packed as conky. It is tailored for my need and hardware.<br />
