@@ -26,8 +26,8 @@
           <object class="GtkLabel" id="label_pomp_logo">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin-top">3</property>
-            <property name="margin-bottom">3</property>
+            <property name="margin-top">15</property>
+            <property name="margin-bottom">25</property>
             <property name="label" translatable="yes">{P}</property>
             <style>
               <class name="pomp-logo"/>
@@ -141,8 +141,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">15</property>
-                <property name="margin-bottom">15</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">Processes</property>
                 <style>
                   <class name="h1"/>
@@ -386,8 +386,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">15</property>
-                <property name="margin-bottom">15</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">CPU</property>
                 <style>
                   <class name="h1"/>
@@ -873,8 +873,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">15</property>
-                <property name="margin-bottom">15</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">RAM</property>
                 <style>
                   <class name="h1"/>
@@ -987,8 +987,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">15</property>
-                <property name="margin-bottom">15</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">Network</property>
                 <style>
                   <class name="h1"/>
@@ -1360,8 +1360,8 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="halign">start</property>
-                <property name="margin-top">15</property>
-                <property name="margin-bottom">15</property>
+                <property name="margin-top">5</property>
+                <property name="margin-bottom">5</property>
                 <property name="label" translatable="yes">Disk</property>
                 <style>
                   <class name="h1"/>
