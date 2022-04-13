@@ -74,7 +74,7 @@ fn update(
 
     for (pid, process) in sys.processes() {
         processes.push(Process {
-            pid: *pid,
+            pid: i32::from(*pid),
             cpu_usage: process.cpu_usage(),
             name: String::from(process.name()),
         });
