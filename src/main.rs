@@ -9,8 +9,12 @@ mod processes;
 mod custom_components;
 mod util;
 
-use gdk::set_allowed_backends;
-use gtk::prelude::{ApplicationExt, ApplicationExtManual, CssProviderExt, GtkWindowExt, WidgetExt};
+use gdk::Screen;
+use gtk::{
+    prelude::{ApplicationExt, ApplicationExtManual, GtkWindowExt},
+    traits::{CssProviderExt, WidgetExt},
+    CssProvider, StyleContext,
+};
 
 use util::get_widget;
 
@@ -20,29 +24,28 @@ const RIGHT_MARGIN: i32 = 10;
 fn main() {
     let application = gtk::Application::new(Some("com.developomp.pomky"), Default::default());
 
-    // only here to prevent warning
-    application.connect_activate(|_| {});
-
-    application.connect_startup(|app| {
-        set_allowed_backends("x11"); // doesn't work well in wayland without it
+    // https://lazka.github.io/pgi-docs/Gio-2.0/classes/Application.html#Gio.Application.signals.startup
+    application.connect_startup(|_| {
         setup_css();
-        build_ui(app);
     });
+
+    // https://lazka.github.io/pgi-docs/Gio-2.0/classes/Application.html#Gio.Application.signals.activate
+    application.connect_activate(build_ui);
 
     application.run();
 }
 
 fn setup_css() {
-    let provider = gtk::CssProvider::new();
+    // Load the CSS file and add it to the provider
+    let provider = CssProvider::new();
 
     provider
         .load_from_data(include_bytes!("style.css"))
-        .expect("Failed to load CSS");
+        .expect("Failed to load CSS data");
 
-    // We give the CssProvided to the default screen so the CSS rules we added
-    // can be applied to our window.
-    gtk::StyleContext::add_provider_for_screen(
-        &gdk::Screen::default().expect("Error initializing gtk css provider."),
+    // Apply CSS
+    StyleContext::add_provider_for_screen(
+        &Screen::default().expect("Could not connect to a display."),
         &provider,
         gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
     );
@@ -62,7 +65,7 @@ fn build_ui(application: &gtk::Application) {
 
     // ==========[ Window ]==========
 
-    let window = get_widget::<gtk::ApplicationWindow>("window_main", &builder);
+    let window: gtk::ApplicationWindow = get_widget("window_main", &builder);
     window.set_application(Some(application));
 
     window.connect_screen_changed(set_visual);
@@ -76,7 +79,7 @@ fn build_ui(application: &gtk::Application) {
 
     set_visual(&window, None);
 
-    // window positioning
+    // move window to the top-right corner of the screen with margin (compensating for the GNOME top bar)
     unsafe {
         window.move_(
             gdk::ffi::gdk_screen_width() - window.default_width() - RIGHT_MARGIN,
@@ -93,5 +96,5 @@ fn build_ui(application: &gtk::Application) {
     network::setup(&builder);
     disk::setup(&builder);
 
-    window.show_all();
+    window.show();
 }

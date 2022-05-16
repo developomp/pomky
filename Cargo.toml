@@ -4,6 +4,6 @@ version = "1.0.0"
 edition = "2021"
 
 [dependencies]
-gtk = "0.15.4"
+gtk = "0.15.5"
 gdk = { version = "0.15.4", features = ["v3_22"] }
-sysinfo = "0.23.6"
+sysinfo = "0.23.12"
