@@ -2,32 +2,42 @@
 
 [![what's this?](https://img.shields.io/badge/what's_this%3F-grey?style=for-the-badge)](https://developomp.com/portfolio/pomky)
 
-A conky-like system monitor made for the sole purpose of teaching myself rust-lang.
+A personal conky-like X system monitor built with rust.
 
-It is not as configurable, modular, or feature packed as conky. It is tailored for my need and hardware.<br />
-If you're looking for an conky alternative written in rust, check out [iphands/randy](https://github.com/iphands/randy).
-
-Designed using [glade](https://wiki.gnome.org/Apps/Glade).
+Pomky is not as configurable, modular, or feature packed as conky.
+It is tailor-made for my need and hardware.
+If you are looking for an conky alternative written in rust, check out [iphands/randy](https://github.com/iphands/randy).
 
 ![screenshot](./screenshot.png)
 
-## Requirements
+## Installing
+
+Since pomky is designed to only run on my hardware,
+it will most likely not compile on your system.
+No technical support will be provided.
+
+- Designed using [glade](https://wiki.gnome.org/Apps/Glade)
+
+### Requirements
 
 - [cargo](https://doc.rust-lang.org/stable/cargo)
-- Noto Sans font
+- [Noto Sans font](https://fonts.google.com/noto/specimen/Noto+Sans)
+- [Audiowide font](https://fonts.google.com/specimen/Audiowide)
 
-## Commands
+### Commands
 
-### Debugging
+#### Debugging with hot reload
 
 ```bash
 cargo run
 ```
 
-### Building
+#### Installing
+
+This command saves `pomky` binary to `~/.cargo/bin/pomky`.
 
 ```bash
-cargo build --release
+cargo install --path .
 ```
 
 ## License
