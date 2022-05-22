@@ -1,12 +1,6 @@
-mod cpu;
-mod disk;
-mod general;
-mod image;
-mod memory;
-mod network;
-mod processes;
-
 mod custom_components;
+mod image;
+mod stats;
 mod util;
 
 use gdk::Screen;
@@ -89,12 +83,12 @@ fn build_ui(application: &gtk::Application) {
 
     // =====[ Setup Stats ]=====
 
-    general::setup(&builder);
-    processes::setup(&builder);
-    cpu::setup(&builder);
-    memory::setup(&builder);
-    network::setup(&builder);
-    disk::setup(&builder);
+    stats::general::setup(&builder);
+    stats::processes::setup(&builder);
+    stats::cpu::setup(&builder);
+    stats::memory::setup(&builder);
+    stats::network::setup(&builder);
+    stats::disk::setup(&builder);
 
     window.show();
 }
