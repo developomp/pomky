@@ -2,9 +2,8 @@ use gdk::glib;
 use gtk::prelude::LabelExt;
 use sysinfo::{ProcessExt, ProcessRefreshKind, RefreshKind, System, SystemExt};
 
+use crate::config::CONFIG_LOCK;
 use crate::util::get_widget;
-
-const PROCESSES_UPDATE_INTERVAL: u32 = 1;
 
 pub fn setup(builder: &gtk::Builder) {
     let process_percent1 = get_widget::<gtk::Label>("process_percent1", &builder);
@@ -35,22 +34,25 @@ pub fn setup(builder: &gtk::Builder) {
         &process_name2,
         &process_name3,
     );
-    glib::timeout_add_seconds_local(PROCESSES_UPDATE_INTERVAL, move || {
-        update(
-            &mut sys,
-            &process_percent1,
-            &process_percent2,
-            &process_percent3,
-            &label_pid1,
-            &label_pid2,
-            &label_pid3,
-            &process_name1,
-            &process_name2,
-            &process_name3,
-        );
+    glib::timeout_add_seconds_local(
+        CONFIG_LOCK.read().unwrap().update_interval_process,
+        move || {
+            update(
+                &mut sys,
+                &process_percent1,
+                &process_percent2,
+                &process_percent3,
+                &label_pid1,
+                &label_pid2,
+                &label_pid3,
+                &process_name1,
+                &process_name2,
+                &process_name3,
+            );
 
-        return glib::Continue(true);
-    });
+            return glib::Continue(true);
+        },
+    );
 }
 
 fn update(

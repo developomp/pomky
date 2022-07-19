@@ -1,14 +1,12 @@
 use gdk::glib::{self, Sender};
 use gtk::prelude::LabelExt;
 use gtk::Builder;
-
 use sysinfo::{RefreshKind, System, SystemExt};
 
+use crate::config::CONFIG_LOCK;
 use crate::custom_components::bar::build_bar;
 use crate::custom_components::graph::build_graph;
 use crate::util::{get_widget, kib_2_gb};
-
-const MEMORY_UPDATE_INTERVAL: u32 = 1; // in seconds
 
 pub fn setup(builder: &Builder) {
     let label_memory_used = get_widget("label_memory_used", &builder);
@@ -39,19 +37,22 @@ pub fn setup(builder: &Builder) {
         &bar_tx,
         &graph_tx,
     );
-    glib::timeout_add_seconds_local(MEMORY_UPDATE_INTERVAL, move || {
-        update(
-            &mut sys,
-            &label_memory_used,
-            &label_memory_total,
-            &label_memory_free,
-            &label_memory_percent,
-            &bar_tx,
-            &graph_tx,
-        );
+    glib::timeout_add_seconds_local(
+        CONFIG_LOCK.read().unwrap().update_interval_memory,
+        move || {
+            update(
+                &mut sys,
+                &label_memory_used,
+                &label_memory_total,
+                &label_memory_free,
+                &label_memory_percent,
+                &bar_tx,
+                &graph_tx,
+            );
 
-        return glib::Continue(true);
-    });
+            return glib::Continue(true);
+        },
+    );
 }
 
 fn update(

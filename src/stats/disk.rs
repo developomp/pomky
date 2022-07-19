@@ -1,18 +1,18 @@
 use gdk::glib;
 use gtk::prelude::LabelExt;
-
 use sysinfo::{Disk, DiskExt, RefreshKind, System, SystemExt};
 
+use crate::config::CONFIG_LOCK;
 use crate::custom_components::bar::build_bar;
 use crate::util::{b_2_gb, get_widget};
 
-const DISK_UPDATE_INTERVAL: u32 = 30; // in seconds
-
 pub fn setup(builder: &gtk::Builder) {
+    // primary disk
     let label_disk_root = get_widget("label_disk_root", &builder);
     let label_disk_root_percent = get_widget("label_disk_root_percent", &builder);
     let (disk_root_tx, disk_root_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
 
+    // secondary disk
     let label_disk_data = get_widget("label_disk_data", &builder);
     let label_disk_data_percent = get_widget("label_disk_data_percent", &builder);
     let (disk_data_tx, disk_data_rx) = glib::MainContext::channel(glib::PRIORITY_DEFAULT);
@@ -28,18 +28,21 @@ pub fn setup(builder: &gtk::Builder) {
         &disk_root_tx,
         &disk_data_tx,
     );
-    glib::timeout_add_seconds_local(DISK_UPDATE_INTERVAL, move || {
-        update(
-            &label_disk_root,
-            &label_disk_root_percent,
-            &label_disk_data,
-            &label_disk_data_percent,
-            &disk_root_tx,
-            &disk_data_tx,
-        );
+    glib::timeout_add_seconds_local(
+        CONFIG_LOCK.read().unwrap().update_interval_disk,
+        move || {
+            update(
+                &label_disk_root,
+                &label_disk_root_percent,
+                &label_disk_data,
+                &label_disk_data_percent,
+                &disk_root_tx,
+                &disk_data_tx,
+            );
 
-        return glib::Continue(true);
-    });
+            return glib::Continue(true);
+        },
+    );
 }
 
 fn update(

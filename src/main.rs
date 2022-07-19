@@ -1,21 +1,25 @@
+mod config;
 mod custom_components;
 mod image;
 mod stats;
 mod util;
 
+use config::CONFIG_LOCK;
 use gdk::Screen;
 use gtk::{
     prelude::{ApplicationExt, ApplicationExtManual, GtkWindowExt},
     traits::{CssProviderExt, WidgetExt},
     CssProvider, StyleContext,
 };
-
 use util::get_widget;
 
-const TOP_MARGIN: i32 = 40;
-const RIGHT_MARGIN: i32 = 10;
-
 fn main() {
+    // Terminate if configuration fails to load
+    if let Err(error_msg) = config::Config::load() {
+        println!("{}", error_msg);
+        std::process::exit(-1);
+    }
+
     let application = gtk::Application::new(Some("com.developomp.pomky"), Default::default());
 
     // https://lazka.github.io/pgi-docs/Gio-2.0/classes/Application.html#Gio.Application.signals.startup
@@ -73,13 +77,8 @@ fn build_ui(application: &gtk::Application) {
 
     set_visual(&window, None);
 
-    // move window to the top-right corner of the screen with margin (compensating for the GNOME top bar)
-    unsafe {
-        window.move_(
-            gdk::ffi::gdk_screen_width() - window.default_width() - RIGHT_MARGIN,
-            TOP_MARGIN,
-        );
-    }
+    let (x, y) = CONFIG_LOCK.read().unwrap().calculate_position(&window);
+    window.move_(x, y);
 
     // =====[ Setup Stats ]=====
 

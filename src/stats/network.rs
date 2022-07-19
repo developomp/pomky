@@ -3,13 +3,10 @@ use gdk::prelude::Continue;
 use gtk::glib;
 use gtk::prelude::LabelExt;
 use gtk::Label;
-
 use sysinfo::{NetworkExt, RefreshKind, System, SystemExt};
 
 use crate::custom_components::graph::build_graph;
 use crate::util::{get_widget, pretty_bytes};
-
-// interval fixed at 1 sec to keep speed data accurate
 
 pub const DEVICE_ETHERNET: &str = "enp3s0";
 pub const DEVICE_WIFI: &str = "wlp5s0";
@@ -86,6 +83,7 @@ pub fn setup(builder: &gtk::Builder) {
         None,
     );
 
+    // interval fixed at 1 sec to keep speed data accurate
     update(&mut sys, &data_tx);
     glib::timeout_add_seconds_local(1, move || {
         update(&mut sys, &data_tx);

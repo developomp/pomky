@@ -3,13 +3,12 @@ use gtk::prelude::LabelExt;
 use gtk::Builder;
 use sysinfo::{ComponentExt, RefreshKind, System, SystemExt};
 
+use crate::config::CONFIG_LOCK;
 use crate::util::get_widget;
 
 const SECONDS_IN_DAY: u64 = 86400;
 const SECONDS_IN_HOUR: u64 = 3600;
 const SECONDS_IN_MINUTE: u64 = 60;
-
-const GENERAL_UPDATE_INTERVAL: u32 = 60; // in seconds
 
 pub fn setup(builder: &Builder) {
     let label_kernel_version = get_widget::<gtk::Label>("label_kernel_version", &builder);
@@ -30,11 +29,14 @@ pub fn setup(builder: &Builder) {
     update(&mut sys, &label_uptime, &label_temperature);
 
     // update every minute
-    glib::timeout_add_seconds_local(GENERAL_UPDATE_INTERVAL, move || {
-        update(&mut sys, &label_uptime, &label_temperature);
+    glib::timeout_add_seconds_local(
+        CONFIG_LOCK.read().unwrap().update_interval_general,
+        move || {
+            update(&mut sys, &label_uptime, &label_temperature);
 
-        return glib::Continue(true);
-    });
+            return glib::Continue(true);
+        },
+    );
 }
 
 fn update(sys: &mut System, label_uptime: &gtk::Label, label_temperature: &gtk::Label) {
