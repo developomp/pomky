@@ -1,7 +1,5 @@
 # Pomky
 
-[![what's this?](https://img.shields.io/badge/what's_this%3F-grey?style=for-the-badge)](https://developomp.com/portfolio/pomky)
-
 A personal conky-like Linux system monitor built with rust.
 
 Pomky is not as configurable, modular, or feature packed as conky.
