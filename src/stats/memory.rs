@@ -1,5 +1,5 @@
 use gdk::glib::{self, Sender};
-use gtk::prelude::LabelExt;
+use gtk::prelude::*;
 use gtk::Builder;
 use sysinfo::{RefreshKind, System, SystemExt};
 

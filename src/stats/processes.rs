@@ -1,5 +1,5 @@
 use gdk::glib;
-use gtk::prelude::LabelExt;
+use gtk::prelude::*;
 use sysinfo::{ProcessExt, ProcessRefreshKind, RefreshKind, System, SystemExt};
 
 use crate::config::CONFIG_LOCK;

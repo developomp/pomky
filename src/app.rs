@@ -3,7 +3,7 @@ use crate::stats;
 use crate::util;
 use gdk::Screen;
 use gtk::{
-    prelude::{ApplicationExt, ApplicationExtManual, GtkWindowExt},
+    prelude::*,
     traits::{CssProviderExt, WidgetExt},
     CssProvider, StyleContext,
 };

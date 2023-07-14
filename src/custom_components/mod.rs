@@ -6,7 +6,7 @@ use gdk::glib::Receiver;
 use gtk;
 use gtk::cairo::Context;
 use gtk::glib;
-use gtk::prelude::{Continue, Inhibit, WidgetExt};
+use gtk::prelude::*;
 
 use std::cell::RefCell;
 use std::rc::Rc;

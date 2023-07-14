@@ -1,7 +1,7 @@
 use gdk::glib::Sender;
-use gdk::prelude::Continue;
+use gdk::prelude::*;
 use gtk::glib;
-use gtk::prelude::LabelExt;
+use gtk::prelude::*;
 use gtk::Label;
 use sysinfo::{NetworkExt, RefreshKind, System, SystemExt};
 

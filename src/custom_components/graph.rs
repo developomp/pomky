@@ -1,6 +1,6 @@
 use gdk::glib;
 use gdk::glib::Receiver;
-use gdk::prelude::Continue;
+use gdk::prelude::*;
 
 use super::build_component;
 

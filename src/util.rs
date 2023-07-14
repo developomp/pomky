@@ -1,5 +1,6 @@
-use gdk::{glib::Object, prelude::IsA};
-use gtk::prelude::BuilderExtManual;
+use gdk::glib::Object;
+use gdk::prelude::*;
+use gtk::prelude::*;
 
 use crate::could_not_get;
 
