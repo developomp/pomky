@@ -66,11 +66,21 @@ fn build_ui(application: &gtk::Application) {
 
     set_visual(&window, None);
 
-    let (x, y) = config::CONFIG_LOCK
-        .read()
-        .unwrap()
-        .calculate_position(&window);
-    window.move_(x, y);
+    // anchor window to top right
+    {
+        let screen_width;
+
+        unsafe {
+            screen_width = gdk::ffi::gdk_screen_width();
+        }
+
+        // move top left point of the window to the following (x, y) coordinate
+        // where (0, 0) is the top left corner of the screen
+        window.move_(
+            screen_width - window.default_width() - config::MARGIN_X,
+            config::MARGIN_Y,
+        );
+    }
 
     // =====[ Setup Stats ]=====
 

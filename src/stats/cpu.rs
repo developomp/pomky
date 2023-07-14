@@ -2,7 +2,7 @@ use gdk::glib::{self, Receiver, Sender};
 use gtk::prelude::*;
 use sysinfo::{CpuExt, RefreshKind, System, SystemExt};
 
-use crate::config::CONFIG_LOCK;
+use crate::config;
 use crate::custom_components::bar::build_bar;
 use crate::custom_components::graph::build_graph;
 use crate::util::get_widget;
@@ -97,7 +97,7 @@ pub fn setup(builder: &gtk::Builder) {
         &cpu_percent_tx_channels,
         &cpu_graph_tx_channels,
     );
-    glib::timeout_add_seconds_local(CONFIG_LOCK.read().unwrap().update_interval_cpu, move || {
+    glib::timeout_add_seconds_local(config::UPDATE_INTERVAL_CPU, move || {
         update(
             &mut sys,
             &label_cpu_percent,

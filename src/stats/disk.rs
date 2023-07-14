@@ -2,7 +2,7 @@ use gdk::glib;
 use gtk::prelude::*;
 use sysinfo::{Disk, DiskExt, RefreshKind, System, SystemExt};
 
-use crate::config::CONFIG_LOCK;
+use crate::config;
 use crate::custom_components::bar::build_bar;
 use crate::util::{b_2_gb, get_widget};
 
@@ -28,21 +28,18 @@ pub fn setup(builder: &gtk::Builder) {
         &disk_root_tx,
         &disk_data_tx,
     );
-    glib::timeout_add_seconds_local(
-        CONFIG_LOCK.read().unwrap().update_interval_disk,
-        move || {
-            update(
-                &label_disk_root,
-                &label_disk_root_percent,
-                &label_disk_data,
-                &label_disk_data_percent,
-                &disk_root_tx,
-                &disk_data_tx,
-            );
+    glib::timeout_add_seconds_local(config::UPDATE_INTERVAL_DISK, move || {
+        update(
+            &label_disk_root,
+            &label_disk_root_percent,
+            &label_disk_data,
+            &label_disk_data_percent,
+            &disk_root_tx,
+            &disk_data_tx,
+        );
 
-            return glib::Continue(true);
-        },
-    );
+        return glib::Continue(true);
+    });
 }
 
 fn update(
