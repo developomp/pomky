@@ -1,5 +1,3 @@
-//! Handles all configuration related stuff.
-
 pub const MARGIN_X: i32 = 10;
 pub const MARGIN_Y: i32 = 40;
 
