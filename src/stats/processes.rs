@@ -1,6 +1,6 @@
 use gdk::glib;
 use gtk::prelude::*;
-use sysinfo::{ProcessExt, ProcessRefreshKind, RefreshKind, System, SystemExt};
+use sysinfo::{Pid, ProcessExt, ProcessRefreshKind, RefreshKind, System, SystemExt};
 
 use crate::config;
 use crate::util::get_widget;
@@ -73,7 +73,7 @@ fn update(
 
     for (pid, process) in sys.processes() {
         processes.push(Process {
-            pid: i32::from(*pid),
+            pid: *pid,
             cpu_usage: process.cpu_usage(),
             name: String::from(process.name()),
         });
@@ -97,6 +97,6 @@ fn update(
 #[derive(Debug)]
 struct Process {
     pub cpu_usage: f32,
-    pub pid: i32,
+    pub pid: Pid,
     pub name: String,
 }

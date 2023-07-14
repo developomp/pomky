@@ -4,7 +4,7 @@ version = "1.0.0"
 edition = "2021"
 
 [dependencies]
-gtk = "0.15.5"
-gdk = { version = "0.15.4", features = ["v3_22"] }
-sysinfo = "0.24.6"
-once_cell = "1.13.0"
+gtk = "0.17.1"
+gdk = { version = "0.17.1", features = ["v3_24"] }
+sysinfo = "0.29.4"
+once_cell = "1.18.0"
