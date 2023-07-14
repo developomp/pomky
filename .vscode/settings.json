@@ -1,11 +1,15 @@
 {
-  "cSpell.words": [
-    "chrono",
-    "developomp",
-    "kibibytes",
-    "paintable",
-    "pomky",
-    "sysinfo",
-    "workarea"
-  ]
+    "cSpell.words": [
+        "Audiowide",
+        "chrono",
+        "developomp",
+        "dtolnay",
+        "kibibytes",
+        "Noto",
+        "paintable",
+        "pomky",
+        "rustup",
+        "sysinfo",
+        "workarea"
+    ]
 }
