@@ -2,9 +2,10 @@ use gdk::glib;
 use gtk::prelude::*;
 use sysinfo::{Disk, DiskExt, RefreshKind, System, SystemExt};
 
-use crate::config;
 use crate::custom_components::bar::build_bar;
 use crate::util::{b_2_gb, get_widget};
+
+const UPDATE_INTERVAL_DISK: u32 = 10;
 
 pub fn setup(builder: &gtk::Builder) {
     // primary disk
@@ -28,7 +29,7 @@ pub fn setup(builder: &gtk::Builder) {
         &disk_root_tx,
         &disk_data_tx,
     );
-    glib::timeout_add_seconds_local(config::UPDATE_INTERVAL_DISK, move || {
+    glib::timeout_add_seconds_local(UPDATE_INTERVAL_DISK, move || {
         update(
             &label_disk_root,
             &label_disk_root_percent,

@@ -2,10 +2,11 @@ use gdk::glib::{self, Receiver, Sender};
 use gtk::prelude::*;
 use sysinfo::{CpuExt, RefreshKind, System, SystemExt};
 
-use crate::config;
 use crate::custom_components::bar::build_bar;
 use crate::custom_components::graph::build_graph;
 use crate::util::get_widget;
+
+const UPDATE_INTERVAL_CPU: u32 = 1;
 
 pub fn setup(builder: &gtk::Builder) {
     let mut sys = System::new_with_specifics(RefreshKind::new());
@@ -97,7 +98,7 @@ pub fn setup(builder: &gtk::Builder) {
         &cpu_percent_tx_channels,
         &cpu_graph_tx_channels,
     );
-    glib::timeout_add_seconds_local(config::UPDATE_INTERVAL_CPU, move || {
+    glib::timeout_add_seconds_local(UPDATE_INTERVAL_CPU, move || {
         update(
             &mut sys,
             &label_cpu_percent,

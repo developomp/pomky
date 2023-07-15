@@ -3,8 +3,9 @@ use gtk::prelude::*;
 use gtk::Builder;
 use sysinfo::{ComponentExt, RefreshKind, System, SystemExt};
 
-use crate::config;
 use crate::util::get_widget;
+
+const UPDATE_INTERVAL_GENERAL: u32 = 60;
 
 const SECONDS_IN_DAY: u64 = 86400;
 const SECONDS_IN_HOUR: u64 = 3600;
@@ -29,7 +30,7 @@ pub fn setup(builder: &Builder) {
     update(&mut sys, &label_uptime, &label_temperature);
 
     // update every minute
-    glib::timeout_add_seconds_local(config::UPDATE_INTERVAL_GENERAL, move || {
+    glib::timeout_add_seconds_local(UPDATE_INTERVAL_GENERAL, move || {
         update(&mut sys, &label_uptime, &label_temperature);
 
         return glib::Continue(true);

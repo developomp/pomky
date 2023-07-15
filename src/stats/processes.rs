@@ -2,9 +2,9 @@ use gdk::glib;
 use gtk::prelude::*;
 use sysinfo::{Pid, ProcessExt, ProcessRefreshKind, RefreshKind, System, SystemExt};
 
-use crate::config;
 use crate::util::get_widget;
 
+const UPDATE_INTERVAL_PROCESS: u32 = 1;
 const LABELS_N: usize = 3;
 
 pub fn setup(builder: &gtk::Builder) {
@@ -29,7 +29,7 @@ pub fn setup(builder: &gtk::Builder) {
     ];
 
     update(&mut sys, &process_percents, &pids, &process_names);
-    glib::timeout_add_seconds_local(config::UPDATE_INTERVAL_PROCESS, move || {
+    glib::timeout_add_seconds_local(UPDATE_INTERVAL_PROCESS, move || {
         update(&mut sys, &process_percents, &pids, &process_names);
         return glib::Continue(true);
     });

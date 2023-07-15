@@ -1,5 +1,4 @@
 mod app;
-mod config;
 mod custom_components;
 mod image;
 mod stats;

@@ -1,4 +1,3 @@
-use crate::config;
 use crate::stats;
 use crate::util;
 use gdk::Screen;
@@ -7,6 +6,9 @@ use gtk::{
     traits::{CssProviderExt, WidgetExt},
     CssProvider, StyleContext,
 };
+
+const MARGIN_X: i32 = 10;
+const MARGIN_Y: i32 = 40;
 
 pub fn launch_app() {
     let application = gtk::Application::new(Some("com.developomp.pomky"), Default::default());
@@ -76,10 +78,7 @@ fn build_ui(application: &gtk::Application) {
 
         // move top left point of the window to the following (x, y) coordinate
         // where (0, 0) is the top left corner of the screen
-        window.move_(
-            screen_width - window.default_width() - config::MARGIN_X,
-            config::MARGIN_Y,
-        );
+        window.move_(screen_width - window.default_width() - MARGIN_X, MARGIN_Y);
     }
 
     // =====[ Setup Stats ]=====
