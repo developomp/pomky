@@ -8,8 +8,8 @@ use sysinfo::{NetworkExt, RefreshKind, System, SystemExt};
 use crate::custom_components::graph::build_graph;
 use crate::util::{get_widget, pretty_bytes};
 
-pub const DEVICE_ETHERNET: &str = "enp3s0";
-pub const DEVICE_WIFI: &str = "wlp5s0";
+pub const DEVICE_ETHERNET: &str = "enp0s20f0u3u4";
+pub const DEVICE_WIFI: &str = "wlp0s20f3";
 
 const GRAPH_WIDTH: i32 = 248;
 const GRAPH_HEIGHT: i32 = 50;
