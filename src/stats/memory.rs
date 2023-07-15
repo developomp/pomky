@@ -7,7 +7,7 @@ use crate::custom_components::bar::build_bar;
 use crate::custom_components::graph::build_graph;
 use crate::util::{get_widget, kib_2_gb};
 
-const UPDATE_INTERVAL_MEMORY: u32 = 1;
+const UPDATE_INTERVAL: u32 = 1;
 
 pub fn setup(builder: &Builder) {
     let label_memory_used = get_widget("label_memory_used", &builder);
@@ -38,7 +38,7 @@ pub fn setup(builder: &Builder) {
         &bar_tx,
         &graph_tx,
     );
-    glib::timeout_add_seconds_local(UPDATE_INTERVAL_MEMORY, move || {
+    glib::timeout_add_seconds_local(UPDATE_INTERVAL, move || {
         update(
             &mut sys,
             &label_memory_used,

@@ -5,10 +5,9 @@ use sysinfo::{DiskExt, RefreshKind, System, SystemExt};
 use crate::custom_components::bar::build_bar;
 use crate::util::{b_2_gb, get_widget};
 
-const UPDATE_INTERVAL_DISK: u32 = 10;
+const UPDATE_INTERVAL: u32 = 10;
 
 pub fn setup(builder: &gtk::Builder) {
-    // primary disk
     let label_disk_name = get_widget("label_disk_name", &builder);
     let label_disk_usage = get_widget("label_disk_usage", &builder);
     let label_disk_percent = get_widget("label_disk_percent", &builder);
@@ -22,7 +21,7 @@ pub fn setup(builder: &gtk::Builder) {
         &label_disk_percent,
         &disk_tx,
     );
-    glib::timeout_add_seconds_local(UPDATE_INTERVAL_DISK, move || {
+    glib::timeout_add_seconds_local(UPDATE_INTERVAL, move || {
         update(
             &label_disk_name,
             &label_disk_usage,

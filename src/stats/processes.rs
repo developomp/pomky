@@ -4,32 +4,32 @@ use sysinfo::{Pid, ProcessExt, ProcessRefreshKind, RefreshKind, System, SystemEx
 
 use crate::util::get_widget;
 
-const UPDATE_INTERVAL_PROCESS: u32 = 1;
-const LABELS_N: usize = 3;
+const UPDATE_INTERVAL: u32 = 1;
+const NUM_LABELS: usize = 3;
 
 pub fn setup(builder: &gtk::Builder) {
     let mut sys = System::new_with_specifics(
         RefreshKind::new().with_processes(ProcessRefreshKind::new().with_cpu()),
     );
 
-    let process_percents: [gtk::Label; LABELS_N] = [
+    let process_percents: [gtk::Label; NUM_LABELS] = [
         get_widget("process_percent1", &builder),
         get_widget("process_percent2", &builder),
         get_widget("process_percent3", &builder),
     ];
-    let pids: [gtk::Label; LABELS_N] = [
+    let pids: [gtk::Label; NUM_LABELS] = [
         get_widget("pid1", &builder),
         get_widget("pid2", &builder),
         get_widget("pid3", &builder),
     ];
-    let process_names: [gtk::Label; LABELS_N] = [
+    let process_names: [gtk::Label; NUM_LABELS] = [
         get_widget("process_name1", &builder),
         get_widget("process_name2", &builder),
         get_widget("process_name3", &builder),
     ];
 
     update(&mut sys, &process_percents, &pids, &process_names);
-    glib::timeout_add_seconds_local(UPDATE_INTERVAL_PROCESS, move || {
+    glib::timeout_add_seconds_local(UPDATE_INTERVAL, move || {
         update(&mut sys, &process_percents, &pids, &process_names);
         return glib::Continue(true);
     });
@@ -55,7 +55,7 @@ fn update(
 
     processes.sort_by(|a, b| b.cpu_usage.partial_cmp(&a.cpu_usage).unwrap());
 
-    for i in 0..LABELS_N {
+    for i in 0..NUM_LABELS {
         process_percents[i].set_text(format!("{:.1}%", processes[i].cpu_usage).as_str());
         pids[i].set_text(format!("{}", processes[i].pid).as_str());
         process_names[i].set_text(processes[i].name.as_str());
