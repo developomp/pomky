@@ -5,7 +5,7 @@ use sysinfo::{RefreshKind, System, SystemExt};
 
 use crate::custom_components::bar::build_bar;
 use crate::custom_components::graph::build_graph;
-use crate::util::{get_widget, kib_2_gb};
+use crate::util::{b_2_gb, get_widget};
 
 const UPDATE_INTERVAL: u32 = 1;
 
@@ -64,13 +64,14 @@ fn update(
 ) {
     sys.refresh_memory();
 
-    let mem_used = sys.used_memory();
-    let mem_total = sys.total_memory();
-    let ratio = mem_used as f64 / mem_total as f64;
+    let total_bytes = sys.total_memory();
+    let used_bytes = sys.used_memory();
+    let available_bytes = sys.available_memory();
+    let ratio = used_bytes as f64 / total_bytes as f64;
 
-    label_memory_used.set_text(&format!("{:.1} GB", kib_2_gb(mem_used)));
-    label_memory_total.set_text(&format!("{:.1} GB", kib_2_gb(mem_total)));
-    label_memory_free.set_text(&format!("{:.1} GB", kib_2_gb(sys.free_memory())));
+    label_memory_used.set_text(&format!("{:.1} GB", b_2_gb(used_bytes)));
+    label_memory_total.set_text(&format!("{:.1} GB", b_2_gb(total_bytes)));
+    label_memory_free.set_text(&format!("{:.1} GB", b_2_gb(available_bytes)));
     label_memory_percent.set_text(&format!("{:.1}%", 100.0 * ratio));
 
     bar_tx.send(ratio).unwrap();
