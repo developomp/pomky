@@ -13,5 +13,18 @@
         "rustup",
         "sysinfo",
         "workarea"
-    ]
+    ],
+
+    "editor.formatOnSave": true,
+    "cargo.automaticCheck": false, // avoid invoking cargo twice when both rust-lang.rust-analyzer & panicbit.cargo extensions are enabled
+
+    "[markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }
