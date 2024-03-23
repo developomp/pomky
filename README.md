@@ -1,5 +1,7 @@
 # Pomky
 
+[![license](https://img.shields.io/github/license/developomp/pomky?style=for-the-badge&color=yellow)](./LICENSE)
+
 A personal conky-like Linux system monitor built with rust and gtk.
 
 Pomky is not as configurable, modular, or feature packed as conky.
