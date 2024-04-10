@@ -2,13 +2,16 @@
 
 [![license](https://img.shields.io/github/license/developomp/pomky?style=for-the-badge&color=yellow)](./LICENSE)
 
+> [!NOTE]  
+> This project has been discontinued. This is my first rust project and I was more interested in getting stuff to work than writing clean and maintainable code. Looking back, the code looks ugly as hell and it is clear that I had no idea what I was doing. I'm not touching this code anymore.
+
 A personal conky-like Linux system monitor built with rust and gtk.
 
 Pomky is not as configurable, modular, or feature packed as conky.
 It is tailor-made for my need and hardware.
 If you are looking for an conky alternative written in rust, check out
 [randy](https://github.com/iphands/randy) or maybe even consider using
-[eww](https://github.com/elkowar/eww).
+[eww](https://github.com/elkowar/eww). Honorable mentions: [dogky](https://github.com/stevenxxiu/dogky).
 
 ![screenshot](./screenshot.png)
 
